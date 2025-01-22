@@ -21,7 +21,7 @@ services:
       args:
         - BACKEND_URL=http://34.45.247.254:8001
     ports:
-      - "8080:5000"
+      - "80:5000"
     volumes:
       - ./ui:/app
     depends_on:
