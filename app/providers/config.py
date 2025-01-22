@@ -26,10 +26,10 @@ class Configs(BaseSettings):
 
     # Auth
     auth_server: str = os.getenv("AUTH_SERVER", "localhost")
-    username: str = os.getenv("ADMIN_USERNAME","admin")
-    password: str = os.getenv("ADMIN_PASSWORD","password")
+    username: str = os.getenv("ADMIN_USERNAME","ashmil")
+    password: str = os.getenv("ADMIN_PASSWORD","ashmil@2255")
     secret_key: str = os.getenv("SECRET_KEY","secret")
-    auth_enabled: bool = os.getenv("AUTH_ENABLED",False)
+    auth_enabled: bool = os.getenv("AUTH_ENABLED",True)
     default_username: str = os.getenv("DEFAULT_USERNAME", "Admin")
 
     retry_limit:int = os.getenv("RETRY_LIMIT",0)
