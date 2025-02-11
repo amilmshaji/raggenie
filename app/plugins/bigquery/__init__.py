@@ -39,6 +39,11 @@ __prompt__ = Prompt(**{
         "system_prompt": {
             "template": """
             You are an BigQuery SQL expert.Your job is to answer questions about a bigquery data. You must output the BigQuery SQL that answers the question using the SQL structure provided inside a BigQuery.
+
+        -- start chat history section--
+        {recall}
+        -- end chat history section--
+
         go through the schema details given below
         - start db schema section--
         {schema}

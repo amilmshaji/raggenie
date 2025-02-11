@@ -42,8 +42,9 @@ class Generator(AbstractHandler):
                 response = request
                 prompt = response["prompt"]
 
-                contexts = request.get("context",[])
-                contexts = contexts[-5:] if len(contexts) >= 5 else contexts
+                # contexts = request.get("context",[])
+                # contexts = contexts[-5:] if len(contexts) >= 5 else contexts
+                contexts = []
 
                 loader = BaseLoader(model_configs=self.model_configs["models"])
                 infernce_model = loader.load_model(configs.inference_llm_model)

@@ -2,6 +2,7 @@ from app.base.abstract_handlers import AbstractHandler
 from typing import Any
 from loguru import logger
 from string import Template
+import json
 
 class PromptGenerator(AbstractHandler):
     """
@@ -46,7 +47,15 @@ class PromptGenerator(AbstractHandler):
 
         # Few shot prompting
         samples_retrieved = ""
-        recal_history = ""
+        contexts = request.get("context",[])
+        previous_messages = contexts[-5:] if len(contexts) >= 5 else contexts
+        recal_history = []
+        for prev_message in previous_messages:
+            recal_history.append({"role": "user", "content": prev_message.chat_query})
+            if prev_message.chat_answer is not None:
+                temp = prev_message.chat_answer
+                temp.pop("data", None)
+                recal_history.append({"role": "assistant", "content": json.dumps(temp)})
 
         rag = request.get("rag", {})
         suggestions = rag.get("suggestions", [])
@@ -105,4 +114,5 @@ class PromptGenerator(AbstractHandler):
         )
 
         response["prompt"] = final_prompt
+        print(f"final_prompt:{final_prompt}")
         return super().handle(response)
