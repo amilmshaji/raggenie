@@ -28,7 +28,11 @@ __prompt__ = Prompt(**{
         "system_prompt": {
             "template": """
             You are an Sqlite expert. Your job is to answer questions about a Sqlite database using only the provided schema details and rules.
-
+ 
+            -- start chat history section--
+            {recall}
+            -- end chat history section--
+            
             go through the schema details given below
             -- start db schema section--
             {schema}
