@@ -7,7 +7,7 @@ from app.plugins.airtable.handler import Airtable
 from app.plugins.website.handler import Website
 from app.plugins.document.handler import Document
 from app.plugins.sqlite.handler import Sqlite
-from app.plugins.maria.handler import Maria
+# from app.plugins.maria.handler import Maria
 from loguru import logger
 
 
@@ -26,7 +26,7 @@ class DSLoader:
             "document" : Document,
             "sqlite" : Sqlite,
             "CSV" : CSVPlugin,
-            "maria": Maria,
+            # "maria": Maria,
         }
         db_type = self.config.get("type","")
         connection_params = self.config.get("params",{})
