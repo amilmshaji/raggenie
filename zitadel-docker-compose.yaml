@@ -28,6 +28,8 @@ services:
     environment:
       PGUSER: postgres
       POSTGRES_PASSWORD: postgres
+      ZITADEL_DOMAIN: http://172.208.65.143:8080
+      ZITADEL_TOKEN_URL: http://172.208.65.143:8080/oauth/v2/token
     networks:
       - 'zitadel'
     healthcheck:
