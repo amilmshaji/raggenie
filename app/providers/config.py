@@ -37,6 +37,8 @@ class Configs(BaseSettings):
     zitadel_domain: str = os.getenv("ZITADEL_DOMAIN", "http://localhost:8080")
     retry_limit:int = os.getenv("RETRY_LIMIT",0)
     application_port: int = os.getenv("APP_PORT", 8001)
+    application_server: str = os.getenv("APP_SERVER", "http://172.208.65.143/")
+
     
     # Cache
     config_cache_limit: int = os.getenv("CONFIG_CACHE_LIMIT", 10)
