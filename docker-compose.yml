@@ -5,7 +5,9 @@ services:
   zitadel:
     restart: 'always'
     networks:
-      - 'zitadel'
+      zitadel:
+        aliases:
+          - zitadel
     image: 'ghcr.io/zitadel/zitadel:latest'
     command: 'start-from-init --masterkey "MasterkeyNeedsToHave32Characters" --tlsMode disabled'
     environment:
@@ -31,7 +33,7 @@ services:
   db:
     restart: 'always'
     networks:
-      - 'zitadel'
+      - zitadel
     image: postgres:16-alpine
     environment:
       PGUSER: postgres
@@ -47,6 +49,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    depends_on:
+      - zitadel  # Wait for Zitadel to be available
     networks:
       - zitadel
     ports:
@@ -60,4 +64,3 @@ services:
   
 networks:
   zitadel:
-
