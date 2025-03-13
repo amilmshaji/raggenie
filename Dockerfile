@@ -1,3 +1,18 @@
+FROM node:20-alpine AS build
+
+ARG BACKEND_URL
+
+WORKDIR /app
+
+COPY package.json ./
+RUN npm install
+
+COPY . .
+
+ENV VITE_BACKEND_URL=$BACKEND_URL
+
+RUN npm run build
+
 # Stage 1: Builder
 FROM python:3.11 AS builder
 
@@ -46,6 +61,7 @@ RUN echo "deb [signed-by=/etc/apt/keyrings/microsoft.asc] https://packages.micro
 # clean the install.
 RUN apt-get -y clean
 
+RUN pip install mariadb
 
 # Set the working directory
 WORKDIR /app
@@ -55,4 +71,4 @@ COPY . .
 
 EXPOSE 8001
 
-# CMD ["python3", "main.py", "--config", "./config.yaml", "llm"]
+CMD ["python3", "main.py", "--config", "./config.yaml", "llm"]
