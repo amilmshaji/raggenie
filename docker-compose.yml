@@ -59,7 +59,7 @@ services:
   zitadel:
     restart: 'always'
     image: 'ghcr.io/zitadel/zitadel:latest'
-    command: 'start-from-init --masterkey "MasterkeyNeedsToHave32Characters" --tlsMode disabled --host 0.0.0.0'  # Bind to all interfaces
+    command: 'start-from-init --masterkey "MasterkeyNeedsToHave32Characters" --tlsMode disabled'
     environment:
       ZITADEL_DATABASE_POSTGRES_HOST: db
       ZITADEL_DATABASE_POSTGRES_PORT: 5432
@@ -71,9 +71,9 @@ services:
       ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD: postgres
       ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE: disable
       ZITADEL_EXTERNALSECURE: "false"
-      ZITADEL_EXTERNALDOMAIN: "zitadel"
-      ZITADEL_DOMAIN: http://zitadel:8080
-      ZITADEL_TOKEN_URL: http://zitadel:8080/oauth/v2/token
+      ZITADEL_EXTERNALDOMAIN: "localhost"
+      ZITADEL_DOMAIN: http://localhost:8080
+      ZITADEL_TOKEN_URL: http://localhost:8080/oauth/v2/token
     depends_on:
       db:
         condition: service_healthy
