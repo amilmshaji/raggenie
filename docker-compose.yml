@@ -121,3 +121,9 @@ services:
         condition: service_healthy
       zitadel:
         condition: service_healthy
+    networks:
+      - my-network
+
+networks:  # Define the custom network
+  my-network:
+    driver: bridge
