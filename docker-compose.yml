@@ -1,11 +1,65 @@
+# version: '3.8'
+
+# services:
+
+#   zitadel:
+#     restart: 'always'
+#     image: 'ghcr.io/zitadel/zitadel:latest'
+#     command: 'start-from-init --masterkey "MasterkeyNeedsToHave32Characters" --tlsMode disabled'
+#     environment:
+#       ZITADEL_DATABASE_POSTGRES_HOST: db
+#       ZITADEL_DATABASE_POSTGRES_PORT: 5432
+#       ZITADEL_DATABASE_POSTGRES_DATABASE: zitadel
+#       ZITADEL_DATABASE_POSTGRES_USER_USERNAME: zitadel
+#       ZITADEL_DATABASE_POSTGRES_USER_PASSWORD: zitadel
+#       ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE: disable
+#       ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME: postgres
+#       ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD: postgres
+#       ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE: disable
+#       ZITADEL_EXTERNALSECURE: "false"
+#       ZITADEL_EXTERNALDOMAIN: "zitadel"
+#       ZITADEL_DOMAIN: http://zitadel:8080
+#       ZITADEL_TOKEN_URL: http://zitadel:8080/oauth/v2/token
+#     depends_on:
+#       db:
+#         condition: 'service_healthy'
+#     ports:
+#       - '8080:8080'
+
+#   db:
+#     restart: 'always'
+#     image: postgres:16-alpine
+#     environment:
+#       PGUSER: postgres
+#       POSTGRES_PASSWORD: postgres
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready", "-d", "zitadel", "-U", "postgres"]
+#       interval: '10s'
+#       timeout: '30s'
+#       retries: 5
+#       start_period: '20s'
+
+#   backend:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     ports:
+#       - "8001:8001"
+#     volumes:
+#       - ./:/app
+#     environment:
+#       - PYTHONDONTWRITEBYTECODE=1
+#       - PYTHONUNBUFFERED=1
+#     command: 'python3 main.py --config ./config.yaml llm'
+
+
 version: '3.8'
 
 services:
-
   zitadel:
     restart: 'always'
     image: 'ghcr.io/zitadel/zitadel:latest'
-    command: 'start-from-init --masterkey "MasterkeyNeedsToHave32Characters" --tlsMode disabled'
+    command: 'start-from-init --masterkey "MasterkeyNeedsToHave32Characters" --tlsMode disabled --host 0.0.0.0'  # Bind to all interfaces
     environment:
       ZITADEL_DATABASE_POSTGRES_HOST: db
       ZITADEL_DATABASE_POSTGRES_PORT: 5432
@@ -22,22 +76,33 @@ services:
       ZITADEL_TOKEN_URL: http://zitadel:8080/oauth/v2/token
     depends_on:
       db:
-        condition: 'service_healthy'
+        condition: service_healthy
+    healthcheck:  # Check if Zitadel is ready
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     ports:
       - '8080:8080'
+    networks:
+      - my-network
 
   db:
     restart: 'always'
     image: postgres:16-alpine
     environment:
-      PGUSER: postgres
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: zitadel  # Explicitly create the database
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-d", "zitadel", "-U", "postgres"]
-      interval: '10s'
-      timeout: '30s'
+      interval: 10s
+      timeout: 30s
       retries: 5
-      start_period: '20s'
+      start_period: 20s
+    networks:
+      - my-network
 
   backend:
     build:
@@ -51,4 +116,14 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
     command: 'python3 main.py --config ./config.yaml llm'
+    depends_on:  # Wait for dependencies to be healthy
+      db:
+        condition: service_healthy
+      zitadel:
+        condition: service_healthy
+    networks:
+      - my-network
 
+networks:  # Define the custom network
+  my-network:
+    driver: bridge
