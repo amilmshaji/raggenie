@@ -33,8 +33,8 @@ class Configs(BaseSettings):
     default_username: str = os.getenv("DEFAULT_USERNAME", "Admin")
     
     client_private_key_file_path: str = os.getenv("CLIENT_PRIVATE_KEY_FILE_PATH", "client-key-file.json")
-    zitadel_token_url: str = os.getenv("ZITADEL_TOKEN_URL", "http://zitadel:8080/oauth/v2/token")
-    zitadel_domain: str = os.getenv("ZITADEL_DOMAIN", "http://zitadel:8080")
+    zitadel_token_url: str = os.getenv("ZITADEL_TOKEN_URL", "http://20.84.41.108/oauth/v2/token")
+    zitadel_domain: str = os.getenv("ZITADEL_DOMAIN", "http://20.84.41.108")
     retry_limit:int = os.getenv("RETRY_LIMIT",0)
     application_port: int = os.getenv("APP_PORT", 8001)
     application_server: str = os.getenv("APP_SERVER", "http://172.208.65.143/")
