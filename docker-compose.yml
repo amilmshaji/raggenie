@@ -4,8 +4,6 @@ services:
 
   zitadel:
     restart: 'always'
-    networks:
-      - 'zitadel'
     image: 'ghcr.io/zitadel/zitadel:latest'
     command: 'start-from-init --masterkey "MasterkeyNeedsToHave32Characters" --tlsMode disabled'
     environment:
@@ -30,8 +28,6 @@ services:
 
   db:
     restart: 'always'
-    networks:
-      - 'zitadel'
     image: postgres:16-alpine
     environment:
       PGUSER: postgres
@@ -55,7 +51,4 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
     command: 'python3 main.py --config ./config.yaml llm'
-  
-networks:
-  zitadel:
 
