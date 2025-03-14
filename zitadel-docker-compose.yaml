@@ -1,5 +1,7 @@
 services:
   zitadel:
+    # The user should have the permission to write to ./machinekey
+    user: "${UID:-1000}"
     restart: 'always'
     networks:
       - 'zitadel'
@@ -16,14 +18,17 @@ services:
       ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD: postgres
       ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE: disable
       ZITADEL_EXTERNALSECURE: false
-      ZITADEL_EXTERNALDOMAIN: "localhost"
-      ZITADEL_DOMAIN: http://localhost:8080
-      ZITADEL_TOKEN_URL: http://localhost:8080/oauth/v2/token
+      ZITADEL_FIRSTINSTANCE_MACHINEKEYPATH: /machinekey/zitadel-admin-sa.json
+      ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_USERNAME: zitadel-admin-sa
+      ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_NAME: Admin
+      ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINEKEY_TYPE: 1
     depends_on:
       db:
         condition: 'service_healthy'
     ports:
       - '8080:8080'
+    volumes:
+      - ./machinekey:/machinekey
 
   db:
     restart: 'always'
