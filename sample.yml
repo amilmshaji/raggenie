@@ -13,6 +13,14 @@ services:
         condition: service_healthy
     networks:
       - zitadel_network
+    
+  nginx2:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - '82:82'
+    networks:
+      - zitadel_network
 
   zitadel:
     user: "${UID:-1000}"
