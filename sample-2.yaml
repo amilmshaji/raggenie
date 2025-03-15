@@ -90,11 +90,11 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
     command: 'python3 main.py --config ./config.yaml llm'
-    depends_on:
-      db:
-        condition: service_healthy
-      zitadel:
-        condition: service_healthy
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
+    #   zitadel:
+    #     condition: service_healthy
     # networks:
     #   - app_network
 
