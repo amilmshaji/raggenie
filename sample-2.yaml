@@ -95,8 +95,8 @@ services:
         condition: service_healthy
       zitadel:
         condition: service_healthy
-    networks:
-      - app_network
+    # networks:
+    #   - app_network
 
 
 
