@@ -100,12 +100,12 @@ services:
 
 
 
-  ubuntu-service:
-    image: ubuntu:latest
-    container_name: ubuntu-container
-    stdin_open: true       # Keeps the container open for interactive input
-    tty: true              # Allocates a pseudo-TTY
-    command: /bin/bash 
+  # ubuntu-service:
+  #   image: ubuntu:latest
+  #   container_name: ubuntu-container
+  #   stdin_open: true       # Keeps the container open for interactive input
+  #   tty: true              # Allocates a pseudo-TTY
+  #   command: /bin/bash 
     # networks:
     #   - app_network
 
