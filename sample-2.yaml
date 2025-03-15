@@ -16,9 +16,9 @@ services:
       retries: 3                                    # Retry 3 times before considering the container unhealthy
       timeout: 10s                                  # Timeout for each check
       start_period: 10s 
-    depends_on:
-      zitadel:
-        condition: service_healthy
+    # depends_on:
+    #   zitadel:
+    #     condition: service_healthy
       # backend:
       #   condition: service_healthy
      
