@@ -9,7 +9,7 @@ services:
       - "443:443"
     volumes:
       - ./sample-nginx.conf:/etc/nginx/nginx.conf  # Mount custom nginx.conf to container
-    # restart: always
+    restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/"]  # Check if Nginx serves the homepage
       interval: 30s                                 # Check every 30 seconds
