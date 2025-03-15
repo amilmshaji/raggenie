@@ -1,4 +1,4 @@
-import pyodbc
+# import pyodbc
 from loguru import logger
 import sqlvalidator
 import sqlparse

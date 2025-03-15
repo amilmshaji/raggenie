@@ -51,12 +51,12 @@ RUN rm -rf /etc/apt/keyrings && mkdir -p /etc/apt/keyrings && \
     curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/keyrings/microsoft.asc > /dev/null && \
     apt-key add /etc/apt/keyrings/microsoft.asc
 
-# Add SQL Server ODBC Driver 17 for Ubuntu 18.04
-RUN echo "deb [signed-by=/etc/apt/keyrings/microsoft.asc] https://packages.microsoft.com/debian/10/prod buster main" | tee /etc/apt/sources.list.d/mssql-release.list && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends --allow-unauthenticated msodbcsql17 mssql-tools && \
-    echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile && \
-    echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+# # Add SQL Server ODBC Driver 17 for Ubuntu 18.04
+# RUN echo "deb [signed-by=/etc/apt/keyrings/microsoft.asc] https://packages.microsoft.com/debian/10/prod buster main" | tee /etc/apt/sources.list.d/mssql-release.list && \
+#     apt-get update && \
+#     apt-get install -y --no-install-recommends --allow-unauthenticated msodbcsql17 mssql-tools && \
+#     echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile && \
+#     echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
 
 # clean the install.
 RUN apt-get -y clean
