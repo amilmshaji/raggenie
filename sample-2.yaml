@@ -78,18 +78,18 @@ services:
     # networks:
     #   - app_network
 
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - '8000:8000'
-    volumes:
-      - ./:/app
-    environment:
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=1
-    command: 'python3 main.py --config ./config.yaml llm'
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - '8000:8000'
+  #   volumes:
+  #     - ./:/app
+  #   environment:
+  #     - PYTHONDONTWRITEBYTECODE=1
+  #     - PYTHONUNBUFFERED=1
+  #   command: 'python3 main.py --config ./config.yaml llm'
     # depends_on:
     #   db:
     #     condition: service_healthy
