@@ -15,6 +15,7 @@ class Zitadel:
         self.base_url = configs.zitadel_domain
         with open(configs.client_private_key_file_path, "r") as f:
             json_data = json.load(f)
+            print(json_data)
         self.private_key = json_data["key"]
         self.kid = json_data["keyId"]
         self.user_id = json_data["userId"]
