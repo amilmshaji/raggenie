@@ -89,6 +89,9 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
+      - ZITADEL_TOKEN_URL="http://app.raggenie.com/oauth/v2/token"
+      - ZITADEL_DOMAIN="http://app.raggenie.com/"
+      - APP_SERVER="http://backend"
     command: 'python3 main.py --config ./config.yaml llm'
     # depends_on:
     #   db:
