@@ -180,8 +180,8 @@ class Zitadel:
                 json={
                     "idpId": f"{idp_id}",
                     "urls": {
-                        "successUrl": "http://0.0.0.0:8001/api/v1/auth/idp/success",
-                        "failureUrl": "http://0.0.0.0:8001/ui/login"
+                        "successUrl": f"{configs.application_server}/api/v1/auth/idp/success",
+                        "failureUrl": f"{configs.application_server}/ui/login"
                 }
                 },
                 headers=self.headers
