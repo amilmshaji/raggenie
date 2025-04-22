@@ -20,11 +20,6 @@ const DashboardLayout = () => {
       setIsAuthenticated(true)
       setAuthEnabled(userData.data.auth_enabled)
     })
-      .catch((error) => {
-        if (error.response.status == 401) {
-          navigate("/login")
-        }
-      });
   };
 
 
