@@ -83,12 +83,12 @@ def create_app(config):
     app = FastAPI()
 
     app.mount("/assets",StaticFiles(directory="./assets"), name="assets")
-    app.mount("/app/assets",StaticFiles(directory="./ui/dist/assets",  html=True), name="ui", )
+    app.mount("/ui/assets",StaticFiles(directory="./ui/dist/assets",  html=True), name="ui", )
 
     templates = Jinja2Templates(directory="./ui/dist")
 
-    @app.get("/app", response_class=HTMLResponse)
-    @app.get("/app/{full_path:path}", response_class=HTMLResponse)
+    @app.get("/ui", response_class=HTMLResponse)
+    @app.get("/ui/{full_path:path}", response_class=HTMLResponse)
     def serve_home(request: Request, full_path: Optional[str]=""):
         if request:
             return templates.TemplateResponse("index.html", context= {"request": request}) 
