@@ -62,7 +62,7 @@ def idp_success(request: Request,db: Session = Depends(get_db)):
                 return commons.is_none_reponse("User Not Created", {"user": {}})
 
         if session_response.status_code == 201:
-            redirect_response = RedirectResponse(url="/ui", status_code=303)
+            redirect_response = RedirectResponse(url="/app", status_code=303)
 
             # Copy cookies from session_response to redirect_response
             for cookie in session_response.headers.getlist("set-cookie"):
