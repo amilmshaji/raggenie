@@ -19,14 +19,14 @@ class DSLoader:
         db_classes = {
             "postgres": Postresql,
             "mysql": Mysql,
-            # "mssql": Mssql,
+            "mssql": Mssql,
             "bigquery": Bigquery,
             "airtable": Airtable,
             "website": Website,
             "document" : Document,
             "sqlite" : Sqlite,
             "CSV" : CSVPlugin,
-            # "maria": Maria,
+            "maria": Maria,
         }
         db_type = self.config.get("type","")
         connection_params = self.config.get("params",{})
