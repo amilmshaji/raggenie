@@ -18,8 +18,24 @@ from sqlalchemy.orm import Session
 import app.api.v1.commons as commons
 
 login = APIRouter()
-zitadel = Zitadel()
+if configs.auth_enabled:
+    zitadel = Zitadel()
 
+@login.post("/login")
+def login_user(response: Response, user: LoginData, db: Session = Depends(get_db)):
+    login_response = zitadel.login_with_username_password(user.username, user.password)
+    
+    # Extract user_id from the respons e
+    if login_response.status_code == 201:
+        response_data = login_response.body.decode("utf-8")
+        response_json = json.loads(response_data)
+        user_id = response_json.get("user_id")
+        username = response_json.get("username")
+        user, error = svc.get_or_create_user(schemas.UserCreate(id=int(user_id), username=username), db)
+        if error:
+            return commons.is_error_response("DB Error", error, {"user": {}})
+        
+    return login_response
 
 # will redirect to idp when called with ipdId
 # need to set successurl and failureUrl dynamically *****
@@ -84,12 +100,25 @@ def list_idp(response: Response):
 
 @login.get("/user_info", dependencies=[Depends(verify_token)])
 def get_user_info(request: Request, db: Session = Depends(get_db), user_data: dict = Depends(verify_token)):
-    if user_data == 'Admin':
+    if user_data.get("username") == 'Admin':
+        new_user = schemas.UserCreate(
+                                id=int(user_data.get("user_id")),
+                                username=user_data.get("username"),
+                            )
+        result, error = svc.get_or_create_user(new_user, db)
+        if error:
+            return commons.is_error_response("DB Error", error, {"user": {}})
+
+        if not result:
+            return commons.is_none_reponse("User Not Created", {"user": {}})
+        env_id, error = svc.get_users_active_env(user_data.get("user_id"), db)
+        if error:
+            return commons.is_error_response("DB Error", error, {"env": {}})
         return CommonResponse(
         status=True,
         status_code=200,
         message="User info retrieved successfully",
-        data={ "username": user_data, "auth_enabled": configs.auth_enabled, "env_id": 0 },
+        data={ "username": user_data['username'], "auth_enabled": configs.auth_enabled, "env_id": env_id },
         error=None
     )
          
