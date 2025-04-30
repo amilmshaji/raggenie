@@ -4,10 +4,11 @@ ARG BACKEND_URL
 
 WORKDIR /app
 
-COPY package.json ./
+COPY ./ui/package.json ./
+
 RUN npm install
 
-COPY . .
+COPY ./ui/ . 
 
 ENV VITE_BACKEND_URL=$BACKEND_URL
 
@@ -61,13 +62,14 @@ RUN echo "deb [signed-by=/etc/apt/keyrings/microsoft.asc] https://packages.micro
 # clean the install.
 RUN apt-get -y clean
 
-RUN pip install mariadb
 
 # Set the working directory
 WORKDIR /app
 
 # Copy the rest of the application code
 COPY . .
+# COPY --from=build /app/dist ./ui/dist
+# COPY --from=build /app/dist-library ./ui/dist-library
 
 EXPOSE 8001
 
