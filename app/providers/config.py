@@ -73,4 +73,6 @@ class Configs(BaseSettings):
         "vw_AccommodationAllotmentList",
     ]
 
+    required_schemas: List[str] = ["emp","mst", "accom"]
+
 configs = Configs()

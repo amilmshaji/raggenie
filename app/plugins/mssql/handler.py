@@ -112,7 +112,7 @@ class Mssql(Formatter, BasePlugin, QueryPlugin,  PluginMetadataMixin):
             schema_name = table[0]
             table_name = table[1]
             table_type = table[2]
-            if table_name not in configs.required_tables:
+            if table_name not in configs.required_tables or schema_name not in configs.required_schemas:
                 continue
 
             logger.info(f"Fetching DDL for {table_type}: {schema_name}.{table_name}")
