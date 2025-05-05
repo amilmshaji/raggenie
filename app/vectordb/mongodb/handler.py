@@ -148,7 +148,7 @@ class AltasMongoDB(BaseVectorDB):
         self._create_index(self.cache_collection, self.cache_index_name)
 
     async def _find_similar(self, datasource, collection, query, count, index_name):
-        logger.info(f"datasources:{datasource}")
+        logger.info(f"datasource:{datasource}")
         logger.info(f"collection:{collection}")
         logger.info(f"index_name:{index_name}")
 
@@ -167,7 +167,7 @@ class AltasMongoDB(BaseVectorDB):
             },
             {
             '$match': {
-                'metadatas.datasource': datasource[0]  # Filter for the specified datasource
+                'metadatas.datasource': datasource  # Filter for the specified datasource
             }
             },
             {

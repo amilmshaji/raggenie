@@ -12,6 +12,7 @@ def parse_llm_response(body):
         text = text.removesuffix("User:")
         try:
             out = json.loads(text)
+            logger.info(f"parsed llm response: {out}")
         except Exception as e:
             logger.info("error parsing llm response")
             logger.critical(e)

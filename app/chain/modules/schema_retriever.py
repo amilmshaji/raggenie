@@ -43,12 +43,10 @@ class SchemaRetriever(AbstractHandler):
         response = request
 
         schema_count = request.get('rag_filters', {}).get("schema_count", 0)
+        datasources = response["rag_filters"]["datasources"]
+        auto_context = "\n\n".join(cont.get("document", "") for cont in request.get("rag", {}).get("context", []).get(datasources[0]))
 
-        auto_context = "\n\n".join(cont.get("document", "") for cont in request.get("rag", {}).get("context", []))
-        intent = request.get("intent_extracter",{}).get("intent","")
-
-        datasource = self.datasources[intent]
-        out = await self.store.find_similar_schema(datasource, request["question"] + "\n" + auto_context, schema_count)
+        out = await self.store.find_similar_schema(datasources[0], request["question"] + "\n" + auto_context, schema_count)
 
         if out and len(out) > 0:
             distances = [doc['distances'] for doc in out]

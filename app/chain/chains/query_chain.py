@@ -99,7 +99,7 @@ class QueryChain:
 
         logger.info("initializing chain")
 
-        self.input_formatter.set_next(self.cache_checker) \
+        self.input_formatter.set_next(self.cache_checker).set_next(self.schema_retriever) \
         .set_next(self.context_retriver) \
         .set_next(self.prompt_generator).set_next(self.generator).set_next(self.validator).set_next(self.executer) \
         .set_next(self.output_formatter).set_next(self.post_processor)

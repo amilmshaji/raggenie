@@ -4,6 +4,7 @@ import sqlvalidator
 import sqlparse
 from .formatter import Formatter
 import uuid
+from app.providers.config import configs
 
 from app.base.base_plugin import BasePlugin
 from app.base.query_plugin import QueryPlugin
@@ -111,6 +112,8 @@ class Mssql(Formatter, BasePlugin, QueryPlugin,  PluginMetadataMixin):
             schema_name = table[0]
             table_name = table[1]
             table_type = table[2]
+            if table_name not in configs.required_tables:
+                continue
 
             logger.info(f"Fetching DDL for {table_type}: {schema_name}.{table_name}")
 
@@ -168,8 +171,9 @@ class Mssql(Formatter, BasePlugin, QueryPlugin,  PluginMetadataMixin):
             # Clean up DDL (remove last comma)
             ddl = ddl.rstrip(",\n") + "\n);\n\n"
             schema_ddl.append(ddl)
-            
+
         table_metadata = sorted(table_metadata, key=lambda x: x['table_name'].lower())
+
         return schema_ddl, table_metadata
 
 

@@ -68,7 +68,6 @@ assets/datasource
 
 # Default databases
 context_store.db
-raggenie.db
 test_db.db
 csv_db.sqlite
 

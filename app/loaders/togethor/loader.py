@@ -29,7 +29,6 @@ class TogethorModelLoader(ModelLoader, LoaderMetadataMixin):
             }
         )
         out = self.model._call("")
-        logger.debug(out)
         response = self.get_response(out)
         respone_metadata = self.get_response_metadata(prompt, response, out)
 
@@ -88,8 +87,6 @@ class TogethorModelLoader(ModelLoader, LoaderMetadataMixin):
         if len(chat_history) > 0:
             messages.extend(chat_history)
         messages.append({"role": "user", "content": prompt})
-
-        logger.info(f"messages:{messages}")
         return messages
 
     def get_models(self):

@@ -29,20 +29,48 @@ class Configs(BaseSettings):
     username: str = os.getenv("ADMIN_USERNAME","admin")
     password: str = os.getenv("ADMIN_PASSWORD","password")
     secret_key: str = os.getenv("SECRET_KEY","secret")
-    auth_enabled: bool = os.getenv("AUTH_ENABLED",True)
+    auth_enabled: bool = os.getenv("AUTH_ENABLED",False)
     default_username: str = os.getenv("DEFAULT_USERNAME", "Admin")
     
     client_private_key_file_path: str = os.getenv("CLIENT_PRIVATE_KEY_FILE_PATH", "app/providers/client-key-file.json")
     zitadel_token_url: str = os.getenv("ZITADEL_TOKEN_URL", "http://localhost:8080/oauth/v2/token")
     zitadel_domain: str = os.getenv("ZITADEL_DOMAIN", "http://localhost:8080")
-    retry_limit:int = os.getenv("RETRY_LIMIT",0)
+    retry_limit:int = os.getenv("RETRY_LIMIT",1)
     application_port: int = os.getenv("APP_PORT", 8001)
     
     # Cache
     config_cache_limit: int = os.getenv("CONFIG_CACHE_LIMIT", 10)
 
     #Intents
-    answer_from_enabled: bool = os.getenv("ANSWER_FROM_ENABLED",False)
-    answer_from: str = os.getenv("ANSWER_FROM","")
+    answer_from_enabled: bool = os.getenv("ANSWER_FROM_ENABLED",True)
+    answer_from: str = os.getenv("ANSWER_FROM","subharti_university")
+
+
+    required_tables: List[str] = [
+        "vw_EmployeesList",
+        "Employees",
+        "FinalPayrollforNONTeaching",
+        "FinalPayrollforTeaching",
+        "FinalPayrollforStipend",
+        "RFIntrestForTeaching",
+        "GatePass",
+        "vw_EducationDetailsList",
+        "LeaveBalance",
+        "TeachingLeaveBalance",
+        "StipendLeaveBalance",
+        "LeaveDateWiseDetails",
+        "BioAttendance",
+        "BioAttendanceTeaching",
+        "DocumentDetails",
+        "Department",
+        "PayCycle",
+        "FinancialYear",
+        "Designation",
+        "JobType",
+        "LeaveType",
+        "EmployeeDocumentType",
+        "ServicesCharges",
+        "vw_AccommodationAllotmentList",
+    ]
 
 configs = Configs()

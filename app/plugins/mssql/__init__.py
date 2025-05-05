@@ -82,7 +82,7 @@ __prompt__ = Prompt(**{
             {context}
             -- end db context section--
 
-            Sample sql queries with their questions are given below:
+            Strictly consider Sample sql queries with their questions are given below:
             -- start query samples section--
             $suggestions
             -- end query samples section--
@@ -90,15 +90,13 @@ __prompt__ = Prompt(**{
             Adhere to the given rules without failure
 
             -- start rules section --
-            - Use Table Aliases always to prevent ambiguity . For example, `SELECT table1.col1, table2.col1 FROM table1 JOIN table2 ON table1.id = table2.id`.
             - use LIKE operator with LOWER function for string comparison or equality
-            - Always use alias/table name for fields in WHERE condition
             - Do not use non existing tables or fields
-            - id columns are mandatory for all operations
-            - Do not use JSON_BUILD_OBJECT operation
             - Do not use unwanted joins
             - Do not return incomplete queries
             - Adher to sysql query syntax
+
+            - To retrieve employees with salaries above a specified threshold Use UNION ALL on emp.FinalPayrollforNONTeaching, emp.FinalPayrollforTeaching, and emp.FinalPayrollforStipend, join with mst.PayCycle and mst.FinancialYear for default filters, and apply TRY_CAST(FPN.CurrentBasicSalary AS float) > [threshold]
             -- end rules section --
             """
         },
@@ -106,17 +104,16 @@ __prompt__ = Prompt(**{
             "template": """
             Follow these steps to generate query to solve the question `$question`
 
-            1. Deliberately go through schema, context, rules deliberately
+            1. Deliberately go through schema, samples, context, rules deliberately
             2. Understand the question and check whether it's doable with the given context
             3. Do only the task asked, Don't hallucinate and overdo the task
-            4. Strictly return all the fields in the schema during listing operations
             5. Strictly return at least 1 text fields and an id field during aggregation/group by operations
-            6. Generate a query to solve the problem using the schema, context, and strictly follow the rules
             7. output in the given json format, extra explanation is strictly prohibited
+            8. Striclty always consider sample sql queries as a reference to construct the query
 
             {
-                "explanation": "Explain how you finalized the sql query using the schemas and rules provided",
-                "query" : "mssql query",
+                "explanation": "Explain how you finalized the sql query using the schemas,views, samples and rules provided.",
+                "query" : "mssql query", //striclty consider sample sql queries as a reference to construct the query
                 "operation_kind" : "aggregation|list",
                 "schema": "used schema details separated by comma",
                 "confidence" : "confidence in 100",
@@ -128,8 +125,6 @@ __prompt__ = Prompt(**{
                 },
                 "general_message": "a general message describing the answers like 'here is your list of incidents' or 'look what i found'",
                 "main_entity" : "main entity  for the query",
-                "next_questions" : [Produce 3 related questions(maximum 8 words) aligned with the current question, db context and which can be answered with only two table . While creating questions strictly prohibit questions which tells to specify for a specific item]
-
             }
             """
         },
@@ -142,28 +137,27 @@ __prompt__ = Prompt(**{
 
             You generated this query given in `[query][/query]`
             [query]
-            {query_generated}
+            $query_generated
             [/query]
 
             But upon execution you encountered some error , error traceback is given in [query_error][/query_error]
             [query_error]
-            {exception_log}
+            $exception_log
             [/query_error]
 
             Follow these steps to generate the query
 
-            1. Deliberately go through schema, context, rules deliberately
+            1. Deliberately go through schema, samples, context, rules deliberately
             2. Understand the question and check whether it's doable with the given context
-            3. Use survey answers if available and include it in query for filtering values
-            4. Do only the task asked, Don't hallucinate and overdo the task
-            5. Strictly return all the fields in the schema during listing operations
-            6. Strictly return at least 1 text fields and an id field during aggregation/group by operations
-            7. Generate a query to solve the problem using the schema, context and the rules and based on the previous query try to rectify the query error
-            8. output in the given json format, extra explanation is strictly prohibited
+            3. Do only the task asked, Don't hallucinate and overdo the task
+            4. Strictly return at least 1 text fields and an id field during aggregation/group by operations
+            5. output in the given json format, extra explanation is strictly prohibited
+            6. Striclty always consider sample sql queries as a reference to construct the query
+
 
             {
-                "explanation": "Explain how you finalized the sql query using the schemas and rules provided",
-                "query" : "mssql query",
+                "explanation": "Explain how you finalized the sql query using the schemas,views, samples and rules provided. if user quesion matching sample query then generate the query using the sample query",
+                "query" : "mssql query", //striclty consider sample sql queries as a reference to construct the query
                 "operation_kind" : "aggregation|list",
                 "visualisation": {
                     "type": "chart type (bar chart, line chart, pie chart) or 'table' for tabular format; 'none' if operation_kind is 'list'",
@@ -176,7 +170,6 @@ __prompt__ = Prompt(**{
                 "confidence" : "confidence in 100",
                 "general_message": "a general message describing the answers like 'here is your list of incidents' or 'look what i found'",
                 "main_entity" : "main entity  for the query",
-                "next_questions" : [Produce 3 related questions(maximum 8 words) aligned with the current question, db context and which can be answered with only two table . While creating questions strictly prohibit questions which tells to specify for a specific item]
             }
             """
         }

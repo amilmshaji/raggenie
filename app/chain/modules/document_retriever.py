@@ -3,6 +3,7 @@ from loguru import logger
 from typing import Any
 from app.providers.container import Container
 import asyncio
+from app.providers.config import configs
 
 
 
@@ -40,11 +41,17 @@ class DocumentRetriever(AbstractHandler):
 
         logger.info("passing through => document_retriever")
         response = request
-        tasks = [
-                self.store.find_similar_documentation(datasource, request['question'], 10)
-                for datasource in self.datasources
-            ]
-        results = await asyncio.gather(*tasks)
+        if configs.answer_from_enabled:
+            datasource = configs.answer_from
+            logger.info(f"datasource:{datasource}")
+            results = [await self.store.find_similar_documentation(datasource, request['question'], 10)]
+
+        else:
+            tasks = [
+                    self.store.find_similar_documentation(datasource, request['question'], 10)
+                    for datasource in self.datasources
+                ]
+            results = await asyncio.gather(*tasks)
 
 
         logger.info("sorting retrieved documents")
@@ -63,6 +70,9 @@ class DocumentRetriever(AbstractHandler):
 
             if "rag" not in response:
                 response["rag"]= {"context" : {}}
+            # if configs.answer_from_enabled:
+            #     response["rag"]["context"][configs.answer_from] = opt_doc
+            # else:
             response["rag"]["context"][list(self.datasources.keys())[index]] = opt_doc
 
         return await super().handle(response)
