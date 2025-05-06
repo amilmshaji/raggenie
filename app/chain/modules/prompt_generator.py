@@ -52,7 +52,7 @@ class PromptGenerator(AbstractHandler):
         for message in previous_messages:
             recal_history += f"USER: {message.chat_query}\n"
             answer = message.chat_answer
-            recal_history += f"ASSITANT: {answer.get('query','')}\n\n"
+            recal_history += f"ASSITANT: query : {answer.get('query','')}\n  data: {answer.get('data',[])[:5]}\n\n"
 
         # Few shot prompting
         samples_retrieved = ""
