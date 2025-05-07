@@ -124,6 +124,7 @@ __prompt__ = Prompt(**{
                     "title": "layout title name"
                 },
                 "general_message": "a general message describing the answers like 'here is your list of incidents' or 'look what i found'",
+                "empty_message" : "a general message describing if there is no data for the question or random question and request gently to reframe a new question",
                 "main_entity" : "main entity  for the query",
             }
             """
@@ -169,6 +170,7 @@ __prompt__ = Prompt(**{
                 "schema": "used schema details separated by comma",
                 "confidence" : "confidence in 100",
                 "general_message": "a general message describing the answers like 'here is your list of incidents' or 'look what i found'",
+                "empty_message" : "a general message describing if there is no data for the question or random question and request gently to reframe a new question",
                 "main_entity" : "main entity  for the query",
             }
             """
