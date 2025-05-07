@@ -1,6 +1,8 @@
 from typing import Any
 from loguru import logger
 
+from app.utils.sb_decoder import decode_data
+
 
 class Formatter:
     def format(self, data: Any,input) -> (dict):
@@ -17,6 +19,9 @@ class Formatter:
         self.kind = input.get("operation_kind", "").lower()
         self.general_message = input.get("general_message")
         self.empty_message = input.get("empty_message")
+        if data is not None:
+            data = self.preprocess_data(data)
+            
 
         logger.info("Formatting output using inference for mysql")
 
@@ -95,6 +100,13 @@ class Formatter:
 
         return response
 
+    def preprocess_data(self, data):
+        for entry in data:
+            for key, value in entry.items():
+                decoded_value = decode_data(value)
+                if decoded_value != "":
+                    entry[key] = decoded_value
 
+        return data
 
 
