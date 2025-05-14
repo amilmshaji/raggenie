@@ -74,5 +74,27 @@ class Configs(BaseSettings):
     ]
 
     required_schemas: List[str] = ["emp","mst", "accom"]
+    user_roles: List[str] = [
+        "developer",
+        "account officer",
+        "senior finance officer",
+        "finance officer",
+        "account teaching",
+        "account non-teaching",
+        "account stipend",
+        "non teaching loan",
+        "personal",
+        "personal teaching",
+        "personal medical",
+        "management",
+        "security office",
+        "hod-nt",
+        "principal",
+        "director",
+        "stipend-os (medical)",
+        "vice chancellor",
+        "rcm dept.",
+        "os",
+    ]
 
 configs = Configs()

@@ -909,3 +909,29 @@ def delete_action(action_id: int, db: Session = Depends(get_db)):
         message="Action Deleted",
         error=None
     )
+
+@router.get("/list-user-roles", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
+def list_user_roles(db: Session = Depends(get_db), user_data: dict = Depends(verify_token)):
+
+    """
+    Retrieves a list of all user roles.
+
+    Args:
+        db (Session): Database session dependency.
+
+    Returns:
+        CommonResponse: A response containing either the list of connectors or an error message.
+    """
+
+    result = configs.user_roles
+
+    if not result:
+        return commons.is_none_reponse("User roles Not Found", {"user_roles": []})
+
+    return resp_schemas.CommonResponse(
+        status=True,
+        status_code=200,
+        data={"user_roles": result},
+        message="User Roles Found",
+        error=None
+    )
