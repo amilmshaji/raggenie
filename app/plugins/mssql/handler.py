@@ -120,6 +120,8 @@ class Mssql(Formatter, BasePlugin, QueryPlugin,  PluginMetadataMixin):
             schema = {
                 "table_id": str(uuid.uuid4()),
                 "table_name": f"{schema_name}.{table_name}",
+                "user_roles": [],
+                "ddl": "",
                 "description": "",
                 "columns": []
             }
@@ -152,6 +154,7 @@ class Mssql(Formatter, BasePlugin, QueryPlugin,  PluginMetadataMixin):
                 fields.append({
                     "column_id": str(uuid.uuid4()),
                     "column_name": column_name,
+                    "user_roles": [],
                     "column_type": data_type,
                     "description": "",
                 })
@@ -166,11 +169,12 @@ class Mssql(Formatter, BasePlugin, QueryPlugin,  PluginMetadataMixin):
 
             # Fix schema['columns'] once per table
             schema["columns"] = fields
-            table_metadata.append(schema)
 
             # Clean up DDL (remove last comma)
             ddl = ddl.rstrip(",\n") + "\n);\n\n"
+            schema["ddl"] = ddl
             schema_ddl.append(ddl)
+            table_metadata.append(schema)
 
         table_metadata = sorted(table_metadata, key=lambda x: x['table_name'].lower())
 

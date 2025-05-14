@@ -12,7 +12,7 @@ from app.services.connector_details import get_plugin_metadata
 from fastapi import Request
 from app.providers.data_preperation import SourceDocuments
 from app.loaders.base_loader import BaseLoader
-
+from typing import Any, Dict, List
 
 
 
@@ -244,6 +244,26 @@ def create_connector(connector: schemas.ConnectorBase, db: Session, user_id: str
     return connector_response, None
 
 
+def update_definitions(existing_definitions: List[Dict[str, Any]], new_definitions: List[Dict[str, Any]]):
+
+    if existing_definitions:
+        existing_table_map = {table["table_name"]: table for table in existing_definitions}
+
+        for new_table in new_definitions:
+            existing_table = existing_table_map.get(new_table["table_name"])
+            if existing_table:
+                new_table["description"] = existing_table.get("description", "")
+
+            existing_column_map = {
+                col["column_name"]: col for col in existing_table.get("columns", [])
+            } if existing_table else {}
+
+            for new_column in new_table.get("columns", []):
+                existing_column = existing_column_map.get(new_column["column_name"])
+                if existing_column:
+                    new_column["description"] = existing_column.get("description", "")
+
+    return new_definitions
 
 def update_connector(connector_id: int, connector: schemas.ConnectorUpdate, db: Session):
 
@@ -258,6 +278,34 @@ def update_connector(connector_id: int, connector: schemas.ConnectorUpdate, db: 
     Returns:
         Tuple: Connector response and error message (if any).
     """
+    provider, is_error = config_repo.get_provider_by_id(connector.connector_type, db)
+    if is_error:
+        return provider, "DB Error"
+
+    provider_configs, is_error = config_repo.get_config_types(connector.connector_type, db)
+
+    if is_error:
+        return None, "DB Error"
+    
+    existing_connector, is_error =  repo.get_connector_by_id(connector_id, db)
+    if is_error:
+        return None, "DB Error"
+    
+    match provider.category_id:
+        case 2 | 5:
+            schema_config, is_error = get_plugin_metadata(provider_configs, connector.connector_config, connector.connector_name, provider.key)
+
+            if is_error is None:
+                new_schema_config = update_definitions(existing_connector.schema_config, schema_config)
+                connector.schema_config = new_schema_config
+            else:
+                return None, "Failed to create connector"
+        case 1:
+            logger.info("creating plugin with category remote documents")
+        case 4:
+            logger.info("creating plugin with category offline documents")
+        case _:
+            return None, "Invalid Connector Type."
 
     updated_connector, is_error = repo.update_existing_connector(connector_id, connector, db)
 

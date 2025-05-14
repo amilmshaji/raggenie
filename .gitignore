@@ -59,6 +59,8 @@ venv.bak/
 
 # Default vector db path
 vector_db
+new_vector_db
+
 
 #assets files
 assets/datasource
