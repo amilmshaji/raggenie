@@ -21,6 +21,8 @@
     font-style: normal;
     font-weight: 600;
     line-height: 16px; 
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 
   .rowTitle {

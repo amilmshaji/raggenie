@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from "react";
+import React, { useState, useRef, useMemo, useEffect } from "react";
 import style from "./SchemaTable.module.css";
 import expandIcon from "./assets/tableExpandIcon.svg";
 import collapseIcon from "./assets/tableCollapseIcon.svg";
@@ -7,6 +7,9 @@ import columnIcon from "./assets/rows.svg";
 import pencilIcon from "./assets/pencil.svg";
 import leftIcon from "./assets/ChevronLeft.svg";
 import rightIcon from "./assets/ChevronRight.svg";
+import Select from 'react-select'
+import { listUserRoles } from "src/services/Connectors";
+import { MultiSelect } from 'primereact/multiselect';
 
 function SchemaTable({ data, itemsPerPage = 8 }) {
   const [expandedRows, setExpandedRows] = useState({});
@@ -14,7 +17,27 @@ function SchemaTable({ data, itemsPerPage = 8 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const textAreaRefs = useRef({});
   const colTextAreaRefs = useRef({});
+  const [options, setOptions] = useState([]);
+  const [selectedRoles, setSelectedRoles] = useState({});
 
+  const fetchUserRoles = async () => {
+    try {
+      const response = await listUserRoles();
+      const userRoles = response.data.data.user_roles;
+      setOptions(
+        userRoles.map((role) => ({
+          name: role,
+          code: role,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching user roles:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserRoles();
+  }, []);
   // Pagination logic
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -78,6 +101,18 @@ function SchemaTable({ data, itemsPerPage = 8 }) {
     }
   };
 
+  const handleUserRoleChange = (selectedOptions, id) => {
+    setSelectedRoles((prev) => ({
+      ...prev,
+      [id]: selectedOptions,
+    }));
+    const dbSchema = JSON.parse(localStorage.getItem("dbschema") || "{}");
+    if (dbSchema[id]) {
+      dbSchema[id].user_roles = selectedOptions ? selectedOptions.map((option) => option.code) : [];
+      localStorage.setItem("dbschema", JSON.stringify(dbSchema));
+    }
+  };
+
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
     setExpandedRows({});
@@ -123,7 +158,10 @@ function SchemaTable({ data, itemsPerPage = 8 }) {
 
   return (
     <div className={style.tableContainer}>
-      <div className={style.tableHeader}>NAME</div>
+      <div className={style.tableHeader}>
+        <span>Name</span>
+        <span>Users</span>
+      </div>
       {paginatedData.map((item, index) => (
         <div key={item.table_id}>
           <div
@@ -138,6 +176,16 @@ function SchemaTable({ data, itemsPerPage = 8 }) {
               />
               <img src={tableIcon} />
               {item.table_name}
+            </div>
+            <div>           
+              <MultiSelect 
+                value={selectedRoles[item.table_id] || []}
+                onChange={(e) => handleUserRoleChange(e.value, item.table_id)}
+                options={options} 
+                optionLabel="name" 
+                placeholder="Select Roles"
+                maxSelectedLabels={2}    
+              />
             </div>
             <img
               src={pencilIcon}

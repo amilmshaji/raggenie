@@ -14,6 +14,10 @@ export const getConnector = (connectorId)=>{
     return GetService(API_URL + `/connector/get/${connectorId}`)
 }
 
+export const listUserRoles = () => {
+    return GetService(API_URL + "/connector/list-user-roles");
+}
+
 export const saveConnector = (connectorId = undefined, connectorType, connectorName, connectorDescription, connectorConfig = {})=>{
     let apiURL = "/connector/create";
     if(connectorId){

@@ -398,7 +398,7 @@ const onRemoveFile = (fileId) => {
                 tempCols.push({
                     column_id: col_id,
                     column_name: localTableDetails[table_id].columns[col_id].column_name,
-                    description: localTableDetails[table_id].columns[col_id].description
+                    description: localTableDetails[table_id].columns[col_id].description,
                 })
             })
 
@@ -411,6 +411,7 @@ const onRemoveFile = (fileId) => {
                 table_id: table_id,
                 table_name: localTableDetails[table_id].table_name,
                 description: localTableDetails[table_id].description,
+                user_roles: localTableDetails[table_id].user_roles,
                 columns: tempCols
             })
         })
