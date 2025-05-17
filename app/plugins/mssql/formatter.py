@@ -103,9 +103,10 @@ class Formatter:
     def preprocess_data(self, data):
         for entry in data:
             for key, value in entry.items():
-                decoded_value = decode_data(value)
-                if decoded_value != "":
-                    entry[key] = decoded_value
+                if isinstance(value, str):
+                    decoded_value = decode_data(value)
+                    if decoded_value != "":
+                        entry[key] = decoded_value
 
         return data
 

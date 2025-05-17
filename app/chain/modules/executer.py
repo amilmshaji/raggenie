@@ -41,17 +41,20 @@ class Executer(AbstractHandler):
         inference = request.get("inference", {})
         formated_sql = inference.get("query", "")
         logger.debug(f"executing query:{formated_sql}")
+        out = []
+        err = None
+        if formated_sql:
 
-        out, err = self.datasource[self.common_context["intent"]].fetch_data(formated_sql)
+            out, err = self.datasource[self.common_context["intent"]].fetch_data(formated_sql)
 
 
-        if err is not None:
-            logger.error(f"error in executing query:{err}")
-            if self.common_context["chain_retries"] < configs.retry_limit :
-                logger.info("going back for resolving error")
-                self.common_context["chain_retries"] =self.common_context["chain_retries"] + 1
-                self.common_context["execution_logs"].append({"query": formated_sql, "error": str(err)})
-                return await self.fall_back_handler.handle(request)
+            if err is not None:
+                logger.error(f"error in executing query:{err}")
+                if self.common_context["chain_retries"] < configs.retry_limit :
+                    logger.info("going back for resolving error")
+                    self.common_context["chain_retries"] =self.common_context["chain_retries"] + 1
+                    self.common_context["execution_logs"].append({"query": formated_sql, "error": str(err)})
+                    return await self.fall_back_handler.handle(request)
 
         response = {**dict(request), **{
             "query_response": out,
