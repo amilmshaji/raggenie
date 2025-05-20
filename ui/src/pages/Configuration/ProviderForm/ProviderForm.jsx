@@ -114,7 +114,7 @@ const ProviderForm = ()=>{
             let tempSaveTableDetails = {}
             connectorData.schema_config?.map(item=>{
                 if(!tempSaveTableDetails[item.table_id]){
-                    tempSaveTableDetails[item.table_id] = { table_id: item.table_id, table_name: item.table_name, description: item.description, columns: {}}
+                    tempSaveTableDetails[item.table_id] = { table_id: item.table_id, table_name: item.table_name, description: item.description, columns: {}, user_roles: item.user_roles }
                 }
                 
                 item?.columns?.map(col=>{

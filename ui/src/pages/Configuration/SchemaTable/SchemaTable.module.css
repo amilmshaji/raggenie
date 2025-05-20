@@ -22,7 +22,7 @@
     font-weight: 600;
     line-height: 16px; 
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1.5fr 0.2fr;
   }
 
   .rowTitle {
@@ -32,13 +32,14 @@
   .rowTitle {
     padding: 0 25px;
     height: 58px;
-    display: flex;
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 0.2fr;
     align-items: center;
     justify-content: space-between;
     background-color: #F9F9F9;
     cursor: pointer;
   }
-  .rowTitle div {
+  .rowTitle > div {
     color: #323232;
     font-family: Inter;
     font-size: 14px;

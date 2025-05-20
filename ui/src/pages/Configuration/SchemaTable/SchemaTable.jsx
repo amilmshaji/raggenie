@@ -7,9 +7,8 @@ import columnIcon from "./assets/rows.svg";
 import pencilIcon from "./assets/pencil.svg";
 import leftIcon from "./assets/ChevronLeft.svg";
 import rightIcon from "./assets/ChevronRight.svg";
-import Select from 'react-select'
 import { listUserRoles } from "src/services/Connectors";
-import { MultiSelect } from 'primereact/multiselect';
+import Select from "src/components/Select/Select";
 
 function SchemaTable({ data, itemsPerPage = 8 }) {
   const [expandedRows, setExpandedRows] = useState({});
@@ -20,24 +19,7 @@ function SchemaTable({ data, itemsPerPage = 8 }) {
   const [options, setOptions] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState({});
 
-  const fetchUserRoles = async () => {
-    try {
-      const response = await listUserRoles();
-      const userRoles = response.data.data.user_roles;
-      setOptions(
-        userRoles.map((role) => ({
-          name: role,
-          code: role,
-        }))
-      );
-    } catch (error) {
-      console.error("Error fetching user roles:", error);
-    }
-  };
 
-  useEffect(() => {
-    fetchUserRoles();
-  }, []);
   // Pagination logic
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -91,7 +73,6 @@ function SchemaTable({ data, itemsPerPage = 8 }) {
     const dbSchema = JSON.parse(localStorage.getItem("dbschema") || "{}");
     if (colId) {
       if (dbSchema[id]) {
-        console.log(newDescription);
         dbSchema[id].columns[colId].description = newDescription;
         localStorage.setItem("dbschema", JSON.stringify(dbSchema));
       }
@@ -108,7 +89,7 @@ function SchemaTable({ data, itemsPerPage = 8 }) {
     }));
     const dbSchema = JSON.parse(localStorage.getItem("dbschema") || "{}");
     if (dbSchema[id]) {
-      dbSchema[id].user_roles = selectedOptions ? selectedOptions.map((option) => option.code) : [];
+      dbSchema[id].user_roles = selectedOptions ? selectedOptions.map((option) => option.value) : [];
       localStorage.setItem("dbschema", JSON.stringify(dbSchema));
     }
   };
@@ -156,6 +137,41 @@ function SchemaTable({ data, itemsPerPage = 8 }) {
     return pages;
   };
 
+
+  const fetchUserRoles = async () => {
+    try {
+      const response = await listUserRoles();
+      const userRoles = response.data.data.user_roles;
+      setOptions(
+        userRoles.map((role) => ({
+          value: role,
+          label: role,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching user roles:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserRoles();
+  }, []);
+
+  useEffect(() => {
+    console.log("Data changed:", data);
+    const initialRoles = {};
+    data.forEach((item) => {
+      if (item.user_roles && Array.isArray(item.user_roles)) {
+        initialRoles[item.table_id] = item.user_roles.map((role) => ({
+          value: role,
+          label: role,
+        }));
+      }
+    });
+    setSelectedRoles(initialRoles);
+  }, [data]);
+
+
   return (
     <div className={style.tableContainer}>
       <div className={style.tableHeader}>
@@ -177,15 +193,15 @@ function SchemaTable({ data, itemsPerPage = 8 }) {
               <img src={tableIcon} />
               {item.table_name}
             </div>
-            <div>           
-              <MultiSelect 
+            <div>
+              <Select
                 value={selectedRoles[item.table_id] || []}
-                onChange={(e) => handleUserRoleChange(e.value, item.table_id)}
-                options={options} 
-                optionLabel="name" 
-                placeholder="Select Roles"
-                maxSelectedLabels={2}    
-              />
+                options={options}
+                isMulti={true}
+                onChange={(value) => { handleUserRoleChange(value, item?.table_id) }}
+                placeholder={"Roles"}
+                noMargin={true}
+                />
             </div>
             <img
               src={pencilIcon}
