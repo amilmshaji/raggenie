@@ -11,12 +11,13 @@ class SourceDocuments:
 
         for schema_config in schema_configs:
             table_user_roles = schema_config.get('user_roles', [])
-            self.schema_details.append({'content': schema_config['ddl'], 'metadata': {"table_user_roles" : table_user_roles}})
+            table_name = schema_config['table_name']
+            self.schema_details.append({'content': schema_config.get('ddl',''), 'metadata': {"table_user_roles" : table_user_roles, "table_name" : table_name}})
             table_doc = ''
-            table_doc = f"Table Name: {schema_config['table_name']} - {schema_config['description']}\n column are given below\n"
+            table_doc = f"Table Name: {table_name} - {schema_config['description']}\n column are given below\n"
             for column in schema_config['columns']:
                 table_doc = f"{table_doc} {column.get('column_name','')} - {column['description']}\n"
-            self.documentation.append({'content': table_doc, 'metadata': {"table_user_roles" : table_user_roles}})
+            self.documentation.append({'content': table_doc, 'metadata': {"table_user_roles" : table_user_roles, "table_name" : table_name}})
 
 
     def get_source_documents(self):

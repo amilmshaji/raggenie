@@ -116,6 +116,7 @@ __prompt__ = Prompt(**{
                 "query" : "mssql query", //striclty consider sample sql queries as a reference to construct the query
                 "operation_kind" : "aggregation|list",
                 "schema": "used schema details separated by comma",
+                "main_schema" : "stictly one main schema used",
                 "confidence" : "confidence in 100",
                 "visualisation": {
                     "type": "chart type (bar chart, line chart, pie chart) or 'table' for tabular format; 'none' if operation_kind is 'list'",
@@ -160,6 +161,8 @@ __prompt__ = Prompt(**{
                 "explanation": "Explain how you finalized the sql query using the schemas,views, samples and rules provided. if user quesion matching sample query then generate the query using the sample query",
                 "query" : "mssql query", //striclty consider sample sql queries as a reference to construct the query
                 "operation_kind" : "aggregation|list",
+                "schema": "used schema details separated by comma",
+                "main_schema" : "stictly one main schema used",
                 "visualisation": {
                     "type": "chart type (bar chart, line chart, pie chart) or 'table' for tabular format; 'none' if operation_kind is 'list'",
                     "value_field": "fields in which values are stored",
@@ -167,7 +170,6 @@ __prompt__ = Prompt(**{
                     "y-axis": "field that can be used as y axis",
                     "title": "layout title name"
                 },
-                "schema": "used schema details separated by comma",
                 "confidence" : "confidence in 100",
                 "general_message": "a general message describing the answers like 'here is your list of incidents' or 'look what i found'",
                 "empty_message" : "a general message describing if there is no data for the question or random question and request gently to reframe a new question",

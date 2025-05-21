@@ -253,6 +253,8 @@ def update_definitions(existing_definitions: List[Dict[str, Any]], new_definitio
             existing_table = existing_table_map.get(new_table["table_name"])
             if existing_table:
                 new_table["description"] = existing_table.get("description", "")
+                new_table["ddl"] = existing_table.get("ddl", "")
+                new_table["user_roles"] = existing_table.get("user_roles", [])
 
             existing_column_map = {
                 col["column_name"]: col for col in existing_table.get("columns", [])
@@ -848,8 +850,10 @@ def update_datasource_documentations(db: Session, vector_store, datasources, id_
                         sd = SourceDocuments([], [], documentations)
                     case 2 | 5:
                         schema_config = connector_details.get("schema_config",[])
-                        schema_details, metadata = datasource.fetch_schema_details()
-                        sd = SourceDocuments(schema_details, schema_config, [])
+                        logger.info(f"schema_config:{schema_config}")
+                        # schema_details, metadata = datasource.fetch_schema_details()
+                        print(f"555555551")
+                        sd = SourceDocuments([], schema_config, [])
                         queries = get_all_connector_samples(connector_details.get("id"), db)
                     case 4:
                         documentations = datasource.fetch_data()
@@ -863,6 +867,59 @@ def update_datasource_documentations(db: Session, vector_store, datasources, id_
 
 
         return active_datsources, None
+
+
+def get_datasource_roleback_documentation(datasources, id_name_mappings):
+        logger.info("getting all datasource roleback documentations")
+        datsources_roleback = {}
+        for key, datasource in datasources.items():
+            connector_details = id_name_mappings.get(key, {})
+            if "id" not in connector_details:
+                logger.warning("Connector not found")
+                continue
+            schema_config = connector_details.get("schema_config",[])
+            datsources_roleback[key] = schema_config
+
+
+            # logger.info(f"initialising datasource {key}")
+            # logger.info("mappings connector_details, id:{}".format(connector_details["id"]))
+
+            # datasource.connect()
+            # success, err = datasource.healthcheck()
+            # if not success:
+            #     logger.error(f"Datasource health failed for {key}, cause: {err}")
+            #     logger.warning(f"skipping datasource initialization for {key}")
+            #     continue
+
+            # active_datsources[key] = datasource
+            # logger.info("Pushing plugin metadata to vector store")
+
+            # sd = SourceDocuments([], [], [])
+            # queries = []
+            # if index:
+            #     match datasource.__category__:
+            #         case 1:
+            #             documentations = datasource.fetch_data()
+            #             sd = SourceDocuments([], [], documentations)
+            #         case 2 | 5:
+            #             schema_config = connector_details.get("schema_config",[])
+            #             logger.info(f"schema_config:{schema_config}")
+            #             # schema_details, metadata = datasource.fetch_schema_details()
+            #             print(f"555555551")
+            #             sd = SourceDocuments([], schema_config, [])
+            #             queries = get_all_connector_samples(connector_details.get("id"), db)
+            #         case 4:
+            #             documentations = datasource.fetch_data()
+            #             sd = SourceDocuments([], [], documentations)
+
+            #     chunked_document, chunked_schema = sd.get_source_documents()
+            #     vector_store.clear_collection(config_id)
+            #     vector_store.prepare_data(key, chunked_document,chunked_schema, queries, int(config_id))
+            #     repo.update_configuration_status(config_id, 2, db)
+
+
+
+        return datsources_roleback, None
 
 def get_inference_and_plugin_configurations(db: Session, config_id: int):
 

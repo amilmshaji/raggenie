@@ -94,20 +94,31 @@ class ChromaDataBase(BaseVectorDB):
         start_time = time.time()
         if chunked_document:
             doc_count = self.documentation_store.count()
-            for i, doc in enumerate(chunked_document, start = doc_count):
-                self._add_to_store(doc.page_content, {**doc.metadata, "datasource": datasource_name, "config_id": config_id}, self.documentation_store, i)
+            for i, doc in enumerate(chunked_document, start=doc_count):
+                # Merge metadata and sanitize any list values by converting to strings
+                raw_metadata = {**doc.metadata, "datasource": datasource_name, "config_id": config_id}
+                sanitized_metadata = {
+                    k: str(v) if isinstance(v, list) else v
+                    for k, v in raw_metadata.items()
+                }
+
+                self._add_to_store(doc.page_content, sanitized_metadata, self.documentation_store, i)
 
         if chunked_schema:
             schema_count = self.schema_store.count()
             for i, doc in enumerate(chunked_schema, start = schema_count):
-                self._add_to_store(doc.page_content, {**doc.metadata, "datasource": datasource_name, "config_id": config_id}, self.schema_store, i)
+                raw_metadata = {**doc.metadata, "datasource": datasource_name, "config_id": config_id}
+                sanitized_metadata = {
+                        k: str(v) if isinstance(v, list) else v
+                        for k, v in raw_metadata.items()
+                    }
+                self._add_to_store(doc.page_content, sanitized_metadata, self.schema_store, i)
 
         if queries:
             cache_count = self.schema_store.count()
             for j,doc in enumerate(queries, start = cache_count):
                 doc = self._convert_lists_to_strings(doc)
                 doc = flatdict.FlatDict(doc, delimiter='.')
-
                 self._add_to_store(doc['description'], {**dict(doc['metadata']), "datasource": datasource_name, "config_id": config_id}, self.samples_store, j)
                 self._add_to_store(doc['description'], {**dict(doc['metadata']), "datasource": datasource_name, "config_id": config_id}, self.cache_store, j)
 
@@ -174,7 +185,7 @@ class ChromaDataBase(BaseVectorDB):
                 output.append({
                     "document": res["documents"][0][i],
                     "id": res["ids"][0][i],
-                    "metadatas": self.unflatten_dict(res["metadatas"][0][i]),
+                    "metadatas": res["metadatas"][0][i],
                     "distances": res["distances"][0][i]
 
                 })
@@ -226,5 +237,5 @@ class ChromaDataBase(BaseVectorDB):
     async def find_samples_by_id(self, id):
         return await self._find_by_id(id, self.samples_store)
 
-    async def find_similar_cache(self, datasource, query, count = 3):
+    async def find_similar_cache(self, datasource, query, count = 5):
         return await self._find_similar(datasource, query, self.samples_store, count)

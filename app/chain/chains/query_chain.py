@@ -3,6 +3,7 @@ from app.chain.modules.input_formatter import InputFormatter
 # from app.chain.modules.guard_rail import GuardRail
 from app.chain.modules.prompt_generator import PromptGenerator
 from app.chain.modules.generator import Generator
+from app.chain.modules.role_back_checker import RoleBackAccessChecker
 from app.chain.modules.schema_retriever import SchemaRetriever
 from app.chain.modules.validator import Validator
 from app.chain.modules.executer import Executer
@@ -47,7 +48,7 @@ class QueryChain:
     for a specific part of the processing pipeline. This allows for flexibility
     and easy extension of functionality.
     """
-    def __init__(self, model_configs, store, datasource, context_store):
+    def __init__(self, model_configs, store, datasource, context_store, roleback_context):
 
         logger.info("loading modules into chain")
 
@@ -93,6 +94,7 @@ class QueryChain:
         self.context_storage = ContextStorage(self.common_context, context_store)
         self.schema_retriever = SchemaRetriever(self.vector_store, self.data_sources)
         self.executer = Executer(self.common_context,self.data_sources, self.prompt_generator)
+        self.role_back_access_checker = RoleBackAccessChecker(self.common_context,self.data_sources, roleback_context)
         self.cache_checker = Cachechecker(self.common_context, self.vector_store,self.executer)
         self.output_formatter = OutputFormatter(self.common_context,self.data_sources)
         self.post_processor = PostProcessor()
@@ -100,8 +102,8 @@ class QueryChain:
         logger.info("initializing chain")
 
         self.input_formatter.set_next(self.cache_checker).set_next(self.schema_retriever) \
-        .set_next(self.context_retriver) \
-        .set_next(self.prompt_generator).set_next(self.generator).set_next(self.validator).set_next(self.executer) \
+        .set_next(self.context_retriver).set_next(self.prompt_generator).set_next(self.generator) \
+        .set_next(self.role_back_access_checker).set_next(self.validator).set_next(self.executer) \
         .set_next(self.output_formatter).set_next(self.post_processor)
 
         self.handler =  self.input_formatter

@@ -581,10 +581,12 @@ def create_yaml(request: Request, config_id: int, db: Session = Depends(get_db),
 
     mappings = confyaml.get("mappings",{})
     datasources, err = svc.update_datasource_documentations(db, vector_store, datasources, mappings, config_id, index)
-    if err:
+
+    roleback_context, error = svc.get_datasource_roleback_documentation(datasources, mappings)
+    if error:
         logger.error("Error updating")
 
-    query_chain = QueryChain(config, vector_store, datasources, context_storage)
+    query_chain = QueryChain(config, vector_store, datasources, context_storage, roleback_context)
     general_chain = GeneralChain(config, vector_store, datasources, context_storage)
     capability_chain = CapabilityChain(config, context_storage, query_chain)
     metedata_chain = MetadataChain(config, vector_store, datasources, context_storage)
@@ -596,7 +598,7 @@ def create_yaml(request: Request, config_id: int, db: Session = Depends(get_db),
         "config": config,
         "vector_store": vector_store,
         "datasources": datasources,
-        "context_storage": context_storage
+        "context_storage": context_storage,
     })
     
     

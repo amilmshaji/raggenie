@@ -52,10 +52,15 @@ async def qna(
     vector_store = cached_data['vector_store']
     request.app.chain = chain
     request.app.vector_store = vector_store
-    
+    user_role = query.role
+
+    if user_role == "user":
+        user_role = "developer"
+
     out = await chain.invoke({
         "question": query.content,
         "context_id": context_id,
+        "user_role" : user_role
     })
 
     resp = llmchat.create_chat(
