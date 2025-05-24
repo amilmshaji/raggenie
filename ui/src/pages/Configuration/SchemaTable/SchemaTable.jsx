@@ -9,6 +9,7 @@ import leftIcon from "./assets/ChevronLeft.svg";
 import rightIcon from "./assets/ChevronRight.svg";
 import { listUserRoles } from "src/services/Connectors";
 import Select from "src/components/Select/Select";
+import { MultiSelect } from "react-multi-select-component";
 
 function SchemaTable({ data, itemsPerPage = 8 }) {
   const [expandedRows, setExpandedRows] = useState({});
@@ -144,8 +145,8 @@ function SchemaTable({ data, itemsPerPage = 8 }) {
       const userRoles = response.data.data.user_roles;
       setOptions(
         userRoles.map((role) => ({
-          value: role,
           label: role,
+          value: role,
         }))
       );
     } catch (error) {
@@ -163,8 +164,8 @@ function SchemaTable({ data, itemsPerPage = 8 }) {
     data.forEach((item) => {
       if (item.user_roles && Array.isArray(item.user_roles)) {
         initialRoles[item.table_id] = item.user_roles.map((role) => ({
-          value: role,
           label: role,
+          value: role,
         }));
       }
     });
@@ -194,13 +195,20 @@ function SchemaTable({ data, itemsPerPage = 8 }) {
               {item.table_name}
             </div>
             <div>
-              <Select
+              {/* <Select
                 value={selectedRoles[item.table_id] || []}
                 options={options}
                 isMulti={true}
                 onChange={(value) => { handleUserRoleChange(value, item?.table_id) }}
                 placeholder={"Roles"}
                 noMargin={true}
+                /> */}
+                <MultiSelect
+                  options={options}
+                  value={selectedRoles[item.table_id] || []}
+                  onChange={(value) => { handleUserRoleChange(value, item?.table_id) }}
+                  className={style.multiSelect}
+                  labelledBy="Select"
                 />
             </div>
             <img

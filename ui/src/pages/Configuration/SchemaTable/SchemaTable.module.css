@@ -29,6 +29,10 @@
     border-top: 1px solid #EFEFEF; /* divide-gray-200 equivalent */
   }
 
+  .multiSelect {
+    width: 200px;
+  }
+
   .rowTitle {
     padding: 0 25px;
     height: 58px;
