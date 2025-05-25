@@ -237,5 +237,5 @@ class ChromaDataBase(BaseVectorDB):
     async def find_samples_by_id(self, id):
         return await self._find_by_id(id, self.samples_store)
 
-    async def find_similar_cache(self, datasource, query, count = 5):
+    async def find_similar_cache(self, datasource, query, count = 6):
         return await self._find_similar(datasource, query, self.samples_store, count)

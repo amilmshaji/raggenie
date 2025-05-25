@@ -90,29 +90,32 @@ class Configs(BaseSettings):
 
         "Vhc.BusAllotment",
 
+        "nac.vw_ActivityMonitoringList",
+
         "Usr.Users"
     ]
     user_roles: List[str] = [
-        "developer",
-        "account officer",
-        "senior finance officer",
-        "finance officer",
-        "account teaching",
         "account non-teaching",
+        "account officer",
         "account stipend",
-        "non teaching loan",
-        "personal",
-        "personal teaching",
-        "personal medical",
-        "management",
-        "security office",
-        "hod-nt",
-        "principal",
+        "account teaching",
+        "developer",
         "director",
+        "finance officer",
+        "hod-nt",
+        "management",
+        "non teaching loan",
+        "os",
+        "personal",
+        "personal medical",
+        "personal teaching",
+        "principal",
+        "rcm dept.",
+        "security office",
+        "senior finance officer",
         "stipend-os (medical)",
         "vice chancellor",
-        "rcm dept.",
-        "os",
     ]
+
 
 configs = Configs()

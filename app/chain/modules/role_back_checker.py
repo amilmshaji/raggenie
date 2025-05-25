@@ -42,7 +42,9 @@ class RoleBackAccessChecker(AbstractHandler):
         logger.debug(f"main_schema:{main_schema}")
 
         valid_user_status = False
-        if main_schema:
+        if main_schema == "N/A" or main_schema == "" or main_schema.lower() == "none":
+            valid_user_status = True
+        elif main_schema:
             datasource = response["rag_filters"]["datasources"][0]
             documents = self.roleback_context.get(datasource)
             if documents:
