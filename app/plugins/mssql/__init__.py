@@ -127,7 +127,7 @@ __prompt__ = Prompt(**{
                     "title": "layout title name"
                 },
                 "intent" : "general_query|database_query", #check if the user question is a general query or database query
-                "general_message": "a general message describing the answers like 'Here is your list of incidents' or 'Here is the ' or 'The request is unclear—please provide more context or clarify what information you need' -> if not clear to answer or for any casual conversation then answer like 'Hey! How can I help you?' or 'Hey! What's up? Anything I can help with?'",
+                "general_message": "a general message describing the answers like 'Here is your list of incidents' or 'Here is the ' or 'The request is unclear—please provide more context or clarify what information you need' -> if not clear to answer or for any casual conversation in a general way politely",
                 "empty_message" : "a general message describing if there is no data for the question or random question and request gently to reframe a new question",
                 "main_entity" : "main entity  for the query",
             }
@@ -175,7 +175,7 @@ __prompt__ = Prompt(**{
                 },
                 "intent" : "general_query|database_query", #check if the user question is a general query or database query
                 "confidence" : "confidence in 100",
-                "general_message": "a general message describing the answers like 'Here is your list of incidents' or 'Here is the ' or 'The request is unclear—please provide more context or clarify what information you need' -> if not clear to answer or for any casual conversation then answer like 'Hey! How can I help you?' or 'Hey! What's up? Anything I can help with?'",
+                "general_message": "a general message describing the answers like 'Here is your list of incidents' or 'Here is the ' or 'The request is unclear—please provide more context or clarify what information you need' -> if not clear to answer or for any casual conversation in a general way politely",
                 "empty_message" : "a general message describing if there is no data for the question or random question and request gently to reframe a new question",
                 "main_entity" : "main entity  for the query",
             }
