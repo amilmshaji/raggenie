@@ -59,10 +59,12 @@ def get_primary_chat(env_id: int, user_id: int, db: Session):
                 ChatHistory.environment_id == env_id,
                 ChatHistory.user_id == user_id
             )
+            .order_by(ChatHistory.created_at.desc())
             .distinct(ChatHistory.chat_context_id)
             .limit(20)
             .all()
         )
+        data = data[::-1]
         return data, False
     except SQLAlchemyError as e:
         return e, True
