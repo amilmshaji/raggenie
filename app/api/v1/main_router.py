@@ -22,6 +22,7 @@ async def qna(
     context_id: str = Query(..., alias="contextId"),
     config_id: str = Query(..., alias="configId"),
     env_id: str = Query(..., alias="envId"),
+    user_id: int = Query(..., alias="userId"),
     db: Session = Depends(get_db)
 ):
 
@@ -69,6 +70,7 @@ async def qna(
             chat_query=query.content,
             chat_answer= jsonable_encoder(out),
             chat_summary=out.get("summary", query.content),
+            user_id=user_id,
             configuration_id=config_id,
             environment_id=env_id
         ),

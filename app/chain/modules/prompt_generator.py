@@ -49,10 +49,12 @@ class PromptGenerator(AbstractHandler):
         previous_messages = contexts[-5:] if len(contexts) >= 5 else contexts
 
         recal_history = ""
+        index = 1
         for message in previous_messages:
-            recal_history += f"USER: {message.chat_query}\n"
+            recal_history += f"[{index}] USER: {message.chat_query}\n"
             answer = message.chat_answer
             recal_history += f"ASSITANT: query : {answer.get('query','')}\n  data: {answer.get('data',[])[:5]}\n\n"
+            index += 1
 
         # Few shot prompting
         samples_retrieved = ""

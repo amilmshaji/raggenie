@@ -42,7 +42,7 @@ class RoleBackAccessChecker(AbstractHandler):
         logger.debug(f"main_schema:{main_schema}")
 
         valid_user_status = False
-        if main_schema == "N/A" or main_schema == "" or main_schema.lower() == "none":
+        if main_schema == "N/A" or main_schema == "n/a"or main_schema == "" or main_schema == "none" or not main_schema or main_schema == "None":
             valid_user_status = True
         elif main_schema:
             datasource = response["rag_filters"]["datasources"][0]
@@ -51,10 +51,12 @@ class RoleBackAccessChecker(AbstractHandler):
                 for doc in documents:
                     table_name = doc.get('table_name', '')
                     logger.info(f"table_name:{table_name}")
-                    if table_name.lower() == main_schema.lower():
+                    if table_name.strip().lower() == main_schema.strip().lower():
                         valid_user_roles = doc.get("user_roles",[])
+                        logger.info(f"valid_user_roles:{valid_user_roles}")
                         if user_role in valid_user_roles:
                             valid_user_status = True
+                            break
 
         if not valid_user_status:
             return Formatter.format("Unfortunately, you don't have the necessary permissions to view this information. Please reach out to your administrator if you need access.","")

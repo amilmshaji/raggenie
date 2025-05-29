@@ -50,15 +50,22 @@ def update_chat_feedback(feedback: schemas.FeedbackCreate, db: Session):
     except SQLAlchemyError as e:
         return e, True
 
-
-def get_primary_chat(env_id: int, db: Session):
+def get_primary_chat(env_id: int, user_id: int, db: Session):
     try:
-        
-        data = db.query(ChatHistory).filter(ChatHistory.primary_chat == True, ChatHistory.environment_id == env_id).distinct(ChatHistory.chat_context_id).all()
+        data = (
+            db.query(ChatHistory)
+            .filter(
+                ChatHistory.primary_chat == True,
+                ChatHistory.environment_id == env_id,
+                ChatHistory.user_id == user_id
+            )
+            .distinct(ChatHistory.chat_context_id)
+            .limit(20)
+            .all()
+        )
         return data, False
     except SQLAlchemyError as e:
         return e, True
-
 
 def get_all_chats_by_context_id(context_id: str, db: Session):
     try:

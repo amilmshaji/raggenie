@@ -16,7 +16,10 @@ class Formatter:
         """
         response = {}
         self.main_entity = input.get("main_entity")
-        self.kind = input.get("operation_kind", "").lower()
+        if input.get("operation_kind", ""):
+            self.kind = input.get("operation_kind", "").lower()
+        else:
+            self.kind = ""
         self.general_message = input.get("general_message")
         self.empty_message = input.get("empty_message")
         if data is not None:

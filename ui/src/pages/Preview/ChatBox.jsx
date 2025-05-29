@@ -16,6 +16,7 @@ import useAppSettings from "src/store/authStore";
 
 const PreviewChatBox = ({urlPrex = "/preview", selectedOption, setSelectedOption})=>{ 
     const { envID } = useAppSettings();
+    const userId = 0;
     const [feedbackStatus, setFeedbackStatus] = useState(false); // for dislike and like activation
     const [currentConfigID, setCurrentConfigID] = useState(0)
     const [conversations, setConversation] = useState([])
@@ -42,7 +43,7 @@ const PreviewChatBox = ({urlPrex = "/preview", selectedOption, setSelectedOption
                 headers: {}
             }
             setIsChatLoading(true)
-            PostService(API_URL + `/query/query?contextId=${contextId}&configId=${currentConfigID}&envId=${envID}`,
+            PostService(API_URL + `/query/query?contextId=${contextId}&configId=${currentConfigID}&envId=${envID}&userId=${userId}`,
                     { "content": message, "role":"user" }, {showLoader: false,allowAuthHeaders:true}, axiosConfig).then(response=>{
                        
                 let res = response.data
@@ -122,7 +123,7 @@ const PreviewChatBox = ({urlPrex = "/preview", selectedOption, setSelectedOption
 
 // ===================CHAT HISTROY START==============================
     const getChatHistory = () => {
-        GetService(API_URL + `/chat/list/context/all/${envID}`,{},{allowAuthHeaders:false}).then(response => {  
+        GetService(API_URL + `/chat/list/context/all/${envID}/${userId}`,{},{allowAuthHeaders:false}).then(response => {  
             let chatHistory = []; 
             let chats = response.data.data.chats;
             

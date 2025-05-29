@@ -49,13 +49,19 @@ class OutputFormatter(AbstractHandler):
                 response = self.datasource[intent_key].format(request.get("query_response"), input_data)
         elif "general_message" in input_data:
             response["content"] = str(input_data.get('general_message'))
+        logger.debug(f"response: {response}")
 
 
         if "data" in response and isinstance(response["data"], list) and len(response["data"]) == 0:
-            if  "empty_message" in input_data:
-                response["content"] = input_data["empty_message"]
-            else:
-                response["content"] = "I didn't find any data matching the query"
+            if "intent" in input_data:
+                if input_data["intent"] != "general_query":
+                    if  "empty_message" in input_data:
+                        response["content"] = input_data["empty_message"]
+                    else:
+                        response["content"] = "I didn't find any data matching the query"
+            if response.get("content", "") == "" or response.get("content") is None:
+                response["content"] = "I'm here to help with any questions or tasks you might have - just let me know what you need assistance with!"
+
             response["main_format"] = "general_chat"
         elif "kind" in response and response["kind"] == "none":
             response["content"] = input_data.get("empty_message", "I didn't find any relevant data regarding this, please reframe your query")
