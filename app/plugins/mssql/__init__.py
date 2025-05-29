@@ -110,8 +110,8 @@ __prompt__ = Prompt(**{
             3. Do only the task asked, Don't hallucinate and overdo the task
             4. Strictly return at least 1 text fields and an id field during aggregation/group by operations
             5. output in the given json format, extra explanation is strictly prohibited
-            6. Striclty if it is a follow up quesion consider chat history to construct the query
-            7. Stricltly make sure response is dependent on both conversation history, context and user query
+            6. Striclty if it is a follow up from conversation history quesion then consider conversation history sql query to construct the query
+            7. Stricltly make sure response is dependent on conversation history, context and user question
 
             {
                 "explanation": "Explain how you finalized the sql query using the schemas and rules provided or if its part of conversation history question",
@@ -127,7 +127,7 @@ __prompt__ = Prompt(**{
                     "title": "layout title name"
                 },
                 "intent" : "general_query|database_query", #check if the user question is a general query or database query
-                "general_message": "a general message describing the answers like 'here is your list of incidents' or 'look what i found' or 'The request is unclear—please provide more context or clarify what information you need' -> if not clear to answer or for any casual conversation then answer like 'Hey! How can I help you?' or 'Hey! What's up? Anything I can help with?'",
+                "general_message": "a general message describing the answers like 'Here is your list of incidents' or 'Here is the ' or 'The request is unclear—please provide more context or clarify what information you need' -> if not clear to answer or for any casual conversation then answer like 'Hey! How can I help you?' or 'Hey! What's up? Anything I can help with?'",
                 "empty_message" : "a general message describing if there is no data for the question or random question and request gently to reframe a new question",
                 "main_entity" : "main entity  for the query",
             }
@@ -157,11 +157,11 @@ __prompt__ = Prompt(**{
             3. Do only the task asked, Don't hallucinate and overdo the task
             4. Strictly return at least 1 text fields and an id field during aggregation/group by operations
             5. output in the given json format, extra explanation is strictly prohibited
-            6. Striclty if it is a follow up quesion consider chat history to construct the query
-            7. Stricltly make sure response is dependent on both conversation history, context and user query
+            6. Striclty if it is a follow up from conversation history quesion then consider conversation history sql query to construct the query
+            7. Stricltly make sure response is dependent on both conversation history, context and user question
 
             {
-                "explanation": "Explain how you finalized the sql query using the schemas and rules provided or if its part of conversation history question",
+                "explanation": "Explain how you finalized the sql query using the schemas and rules provided and if its part of conversation history question",
                 "query" : "mssql query to answer `$question` by strictly following the rules and based on conversation history, schema and based on the previous query try to rectify the query error",
                 "operation_kind" : "aggregation|list",
                 "schema": "used schema details separated by comma",
@@ -175,7 +175,7 @@ __prompt__ = Prompt(**{
                 },
                 "intent" : "general_query|database_query", #check if the user question is a general query or database query
                 "confidence" : "confidence in 100",
-                "general_message": "a general message describing the answers like 'here is your list of incidents' or 'look what i found' or 'The request is unclear—please provide more context or clarify what information you need' -> if not clear to answer or for any casual conversation then answer like 'Hey! How can I help you?' or 'Hey! What's up? Anything I can help with?'",
+                "general_message": "a general message describing the answers like 'Here is your list of incidents' or 'Here is the ' or 'The request is unclear—please provide more context or clarify what information you need' -> if not clear to answer or for any casual conversation then answer like 'Hey! How can I help you?' or 'Hey! What's up? Anything I can help with?'",
                 "empty_message" : "a general message describing if there is no data for the question or random question and request gently to reframe a new question",
                 "main_entity" : "main entity  for the query",
             }
