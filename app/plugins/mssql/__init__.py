@@ -105,17 +105,17 @@ __prompt__ = Prompt(**{
             "template": """
             Follow these steps to generate query to solve the question `$question`
 
-            1. Deliberately go through schema, samples, context, rules deliberately
+            1. Deliberately go through Conversation history, schema, samples, context, rules.
             2. Understand the question and check whether it's doable with the given context
             3. Do only the task asked, Don't hallucinate and overdo the task
             4. Strictly return at least 1 text fields and an id field during aggregation/group by operations
             5. output in the given json format, extra explanation is strictly prohibited
             6. Striclty if it is a follow up quesion consider chat history to construct the query
-            7. Stricltly make sure response is dependent on both chat history, context and user query
+            7. Stricltly make sure response is dependent on both conversation history, context and user query
 
             {
-                "explanation": "Explain how you finalized the sql query using the schemas,views, samples and rules provided.",
-                "query" : "mssql query to answer `$question` by strictly following the rules.",
+                "explanation": "Explain how you finalized the sql query using the schemas and rules provided or if its part of conversation history question",
+                "query" : "mssql query to answer `$question` by strictly following the rules and conversation history",
                 "operation_kind" : "aggregation|list",
                 "schema": "used schema details separated by comma",
                 "main_schema" : "stictly one main schema.table used",
@@ -127,7 +127,7 @@ __prompt__ = Prompt(**{
                     "title": "layout title name"
                 },
                 "intent" : "general_query|database_query", #check if the user question is a general query or database query
-                "general_message": "a general message describing the answers like 'here is your list of incidents' or 'look what i found' or 'how can i help you?'",
+                "general_message": "a general message describing the answers like 'here is your list of incidents' or 'look what i found' or 'The request is unclear—please provide more context or clarify what information you need' -> if not clear to answer or for any casual conversation then answer like 'Hey! How can I help you?' or 'Hey! What's up? Anything I can help with?'",
                 "empty_message" : "a general message describing if there is no data for the question or random question and request gently to reframe a new question",
                 "main_entity" : "main entity  for the query",
             }
@@ -152,17 +152,17 @@ __prompt__ = Prompt(**{
 
             Follow these steps to generate the query
 
-            1. Deliberately go through schema, samples, context, rules deliberately
+            1. Deliberately go through conversation history, schema, samples, context, rules deliberately
             2. Understand the question and check whether it's doable with the given context
             3. Do only the task asked, Don't hallucinate and overdo the task
             4. Strictly return at least 1 text fields and an id field during aggregation/group by operations
             5. output in the given json format, extra explanation is strictly prohibited
             6. Striclty if it is a follow up quesion consider chat history to construct the query
-            7. Stricltly make sure response is dependent on both chat history, context and user query
+            7. Stricltly make sure response is dependent on both conversation history, context and user query
 
             {
-                "explanation": "Explain how you finalized the sql query using the schemas,views, samples and rules provided. if user quesion matching sample query then generate the query using the sample query",
-                "query" : "mssql query to answer `$question` by strictly following the rules and based on schema and based on the previous query try to rectify the query error",
+                "explanation": "Explain how you finalized the sql query using the schemas and rules provided or if its part of conversation history question",
+                "query" : "mssql query to answer `$question` by strictly following the rules and based on conversation history, schema and based on the previous query try to rectify the query error",
                 "operation_kind" : "aggregation|list",
                 "schema": "used schema details separated by comma",
                 "main_schema" : "stictly one main schema.table used",
@@ -175,7 +175,7 @@ __prompt__ = Prompt(**{
                 },
                 "intent" : "general_query|database_query", #check if the user question is a general query or database query
                 "confidence" : "confidence in 100",
-                "general_message": "a general message describing the answers like 'here is your list of incidents' or 'look what i found' or 'how can i help you?'",
+                "general_message": "a general message describing the answers like 'here is your list of incidents' or 'look what i found' or 'The request is unclear—please provide more context or clarify what information you need' -> if not clear to answer or for any casual conversation then answer like 'Hey! How can I help you?' or 'Hey! What's up? Anything I can help with?'",
                 "empty_message" : "a general message describing if there is no data for the question or random question and request gently to reframe a new question",
                 "main_entity" : "main entity  for the query",
             }

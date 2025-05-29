@@ -1,6 +1,7 @@
 from typing import Any
 from loguru import logger
 from app.base.abstract_handlers import AbstractHandler
+from app.providers.container import Container
 
 
 class Cachechecker(AbstractHandler):
@@ -25,6 +26,8 @@ class Cachechecker(AbstractHandler):
         self.forward_handler = forward_handler
         self.forward = forward
         self.common_context = common_context
+        self.context_relevance_threshold = 4
+
 
 
     async def handle(self, request: Any) -> str:
@@ -44,6 +47,18 @@ class Cachechecker(AbstractHandler):
 
         datasources = response["rag_filters"]["datasources"]
         output = await self.cache.find_similar_cache(datasources[0], question)
+        
+        opt_doc = []
+        if output and len(output) > 0 and output[0]['distances'] < self.context_relevance_threshold:
+            distances = [doc['distances'] for doc in output]
+            logger.info(f"distances:{distances}")
+            if len(output) > 5:
+                clusters = Container.clustering().kmeans(distances, 2)
+                shortest_cluster = clusters[0]
+                for doc in output:
+                    if doc['distances'] in shortest_cluster:
+                        opt_doc.append(doc)
+
         if "rag" not in response:
             response["rag"] = {
                 "suggestions": output
