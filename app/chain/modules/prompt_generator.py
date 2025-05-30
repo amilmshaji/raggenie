@@ -50,12 +50,15 @@ class PromptGenerator(AbstractHandler):
 
         recal_history = ""
         index = 1
+        
+        previous_schemas = []
         for message in previous_messages:
             recal_history += f"[{index}] USER: {message.chat_query}\n"
             answer = message.chat_answer
             recal_history += f"ASSITANT: query : {answer.get('query','')}\n  data: {answer.get('data',[])[:5]}\n\n"
-            index += 1
+            previous_schemas.extend(message.chat_context.get("rag", {}).get("schema", {}))
 
+            index += 1
         # Few shot prompting
         samples_retrieved = ""
 
@@ -82,7 +85,15 @@ class PromptGenerator(AbstractHandler):
             )
         else:
             auto_context = "\n\n".join(cont["document"] for cont in rag.get("context", {}).get(intent,[]))
-            auto_schema = "\n\n".join(schema["document"] for schema in rag.get("schema", []))
+            auto_schema = ""
+            rag_schemas = rag.get("schema", [])
+            for prev_schema in previous_schemas:
+                if prev_schema not in rag_schemas:
+                    rag_schemas.append(prev_schema)            
+            auto_schema = ""
+            for schema in rag_schemas:
+                auto_schema += "\n\n" + schema["document"]
+            
             system_prompt_context = context.system_prompt
             system_prompt = system_prompt_context.template.format(
                 schema=auto_schema,

@@ -64,11 +64,14 @@ async def qna(
         "user_role" : user_role
     })
 
+    chat_context = out.get("chat_context", {})
+    out.pop("chat_context", None)
     resp = llmchat.create_chat(
         schemas.ChatHistoryCreate(
             chat_context_id=context_id,
             chat_query=query.content,
             chat_answer= jsonable_encoder(out),
+            chat_context = jsonable_encoder(chat_context),
             chat_summary=out.get("summary", query.content),
             user_id=user_id,
             configuration_id=config_id,

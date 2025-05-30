@@ -79,5 +79,8 @@ class OutputFormatter(AbstractHandler):
         response["summary"] = request.get("summary", '')
         logger.debug(f"content: {response.get('content')}")
 
+        chat_context = request
+        chat_context.pop("prompt", None)
+        response["chat_context"] = chat_context
 
         return await super().handle(response)

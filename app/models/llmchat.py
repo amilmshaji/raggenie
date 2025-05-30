@@ -10,6 +10,7 @@ class ChatHistory(Base):
     chat_context_id = Column(String, index=True, nullable=False)
     chat_query = Column(String, nullable=False)
     chat_answer = Column(JSON, nullable=False)
+    chat_context = Column(JSON, nullable=True)
     chat_summary = Column(String, nullable=False)
     chat_status = Column(Integer, nullable=True)
     feedback_status = Column(Integer, nullable=True)

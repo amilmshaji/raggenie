@@ -26,6 +26,7 @@ def create_chat(chat: schemas.ChatHistoryCreate, db: Session):
         chat_answer=result.chat_answer,
         chat_id=result.chat_id,
         chat_query=result.chat_query,
+        chat_context=result.chat_context,
         chat_status=result.chat_status,
         chat_summary=result.chat_summary,
         primary_chat=result.primary_chat,
@@ -93,11 +94,11 @@ def list_chats_by_context(env_id: int, user_id:int, db: Session):
 
     if not result:
         return [], None
-
     chat_data = [
         schemas.ChatResponse(
             chat_context_id=chat.chat_context_id,
             chat_answer=chat.chat_answer,
+            chat_context = {},
             chat_id=chat.chat_id,
             chat_query=chat.chat_query,
             chat_status=chat.chat_status,
@@ -140,6 +141,7 @@ def list_all_chats_by_context_id(context_id: str, db: Session):
         schemas.ChatResponse(
             chat_context_id=chat.chat_context_id,
             chat_answer=chat.chat_answer,
+            chat_context = {},
             chat_id=chat.chat_id,
             chat_query=chat.chat_query,
             chat_status=chat.chat_status,
