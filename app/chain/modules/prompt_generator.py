@@ -46,7 +46,7 @@ class PromptGenerator(AbstractHandler):
         intent = response["intent_extractor"]['intent']
 
         contexts = request.get("context",[])
-        previous_messages = contexts[-5:] if len(contexts) >= 5 else contexts
+        previous_messages = contexts[-3:] if len(contexts) >= 3 else contexts
 
         recal_history = ""
         index = 1

@@ -98,6 +98,10 @@ __prompt__ = Prompt(**{
             - The conversation history is arranged in strict chronological order from OLDEST to NEWEST.
 
             - To retrieve employees with salaries above a specified threshold Use UNION ALL on emp.FinalPayrollforNONTeaching, emp.FinalPayrollforTeaching, and emp.FinalPayrollforStipend, join with mst.PayCycle and mst.FinancialYear for default filters, and apply TRY_CAST(FPN.CurrentBasicSalary AS float) > [threshold]
+            - Get the employee with the highest total NETELCTCharge for a given month, grouped by employee and ordered descending.
+            - parents details means basically taking about father name
+            - if only month name is given then take current year as year
+            - To retrieve all columns of data for a specific employee from the emp.vw_EmployeesList view based on their ID, use SELECT * FROM emp.vw_EmployeesList WHERE Id = <EmployeeID>.
             -- end rules section --
             """
         },

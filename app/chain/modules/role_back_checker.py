@@ -4,7 +4,6 @@ from loguru import logger
 from app.providers.config import configs
 from app.chain.formatter.general_response import Formatter
 
-
 class RoleBackAccessChecker(AbstractHandler):
 
     def __init__(self, common_context, datasource, roleback_context) -> None:

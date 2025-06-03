@@ -97,7 +97,7 @@ def list_chats_by_context(env_id: int, user_id:int, db: Session):
     chat_data = [
         schemas.ChatResponse(
             chat_context_id=chat.chat_context_id,
-            chat_answer=chat.chat_answer,
+            chat_answer={},
             chat_context = {},
             chat_id=chat.chat_id,
             chat_query=chat.chat_query,

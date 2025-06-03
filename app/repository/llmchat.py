@@ -61,7 +61,7 @@ def get_primary_chat(env_id: int, user_id: int, db: Session):
             )
             .order_by(ChatHistory.created_at.desc())
             .distinct(ChatHistory.chat_context_id)
-            .limit(20)
+            .limit(50)
             .all()
         )
         data = data[::-1]
