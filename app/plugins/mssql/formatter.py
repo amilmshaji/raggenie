@@ -42,7 +42,6 @@ class Formatter:
             "main_format": self.kind,
             "role": "assistant",
             "content": self.general_message,
-            "empty_message": self.empty_message,
         })
 
         return response

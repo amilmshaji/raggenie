@@ -66,15 +66,12 @@ class OutputFormatter(AbstractHandler):
             response["main_format"] = "general_chat"
 
 
-        response["next_questions"] = input_data.get("next_questions", [])
-
         if "context_id" in request:
             response["context_id"] = request["context_id"]
             response["question"] = request["question"]
 
         response["query"] = input_data.get("query", '')
         response["intent"] = request.get("intent_extractor", {}).get("intent","")
-        response["summary"] = request.get("summary", '')
         logger.debug(f"content: {response.get('content')}")
 
         chat_context = request

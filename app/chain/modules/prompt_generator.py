@@ -46,7 +46,7 @@ class PromptGenerator(AbstractHandler):
         intent = response["intent_extractor"]['intent']
 
         contexts = request.get("context",[])
-        previous_messages = contexts[-3:] if len(contexts) >= 3 else contexts
+        previous_messages = contexts[-2:] if len(contexts) >= 2 else contexts
 
         recal_history = ""
         index = 1
@@ -56,7 +56,8 @@ class PromptGenerator(AbstractHandler):
             recal_history += f"[{index}] USER: {message.chat_query}\n"
             answer = message.chat_answer
             recal_history += f"ASSITANT: query : {answer.get('query','')}\n  data: {answer.get('data',[])[:5]}\n\n"
-            previous_schemas.extend(message.chat_context.get("rag", {}).get("schema", {}))
+            
+            previous_schemas.extend(message.chat_context.get("rag", {}).get("schema", [])[:2])
 
             index += 1
         # Few shot prompting
@@ -87,8 +88,16 @@ class PromptGenerator(AbstractHandler):
             auto_context = "\n\n".join(cont["document"] for cont in rag.get("context", {}).get(intent,[]))
             auto_schema = ""
             rag_schemas = rag.get("schema", [])
+            tables = []
+            for r in rag_schemas:
+                tables.append(r.get("metadatas",{}).get("table_name","").lower())
+
+            # logger.info(f"rag_schemas:{rag_schemas}")
             for prev_schema in previous_schemas:
-                if prev_schema not in rag_schemas:
+                # logger.info(f"prev_schema:{prev_schema}")
+                table_name = prev_schema.get("metadatas",{}).get("table_name","")
+                if table_name.lower() not in tables:
+                    # logger.info(f"table_name:{table_name}")
                     rag_schemas.append(prev_schema)            
             auto_schema = ""
             for schema in rag_schemas:

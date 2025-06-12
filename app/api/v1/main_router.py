@@ -1,5 +1,5 @@
 from app.providers.cache_manager import cache_manager
-from fastapi import APIRouter, Depends, status, Query
+from fastapi import APIRouter, Depends, status, Query, BackgroundTasks
 from fastapi.encoders import jsonable_encoder
 from app.models.request import Chat, FeedbackCorrectionRequest
 from starlette.requests import Request
@@ -13,17 +13,35 @@ from app.utils.database import get_db
 
 MainRouter = APIRouter()
 
+def save_data(context_id, content, out, chat_context, user_id,config_id, env_id, db):
+    resp = llmchat.create_chat(
+        schemas.ChatHistoryCreate(
+            chat_context_id=context_id,
+            chat_query=content,
+            chat_answer= jsonable_encoder(out),
+            chat_context = jsonable_encoder(chat_context),
+            chat_summary=out.get("summary", content),
+            user_id=user_id,
+            configuration_id=config_id,
+            environment_id=env_id
+        ),
+        db
+    )
+    logger.info(f"saving chat to database")
+    if resp.status:
+        out["chat_id"] = resp.data["chat"].chat_id
 
 @MainRouter.post("/query", status_code=status.HTTP_201_CREATED)
 
 async def qna(
     query: Chat,
     request: Request,
+    background_tasks: BackgroundTasks,
     context_id: str = Query(..., alias="contextId"),
     config_id: str = Query(..., alias="configId"),
     env_id: str = Query(..., alias="envId"),
     user_id: int = Query(..., alias="userId"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
 
     """
@@ -66,23 +84,11 @@ async def qna(
 
     chat_context = out.get("chat_context", {})
     out.pop("chat_context", None)
-    resp = llmchat.create_chat(
-        schemas.ChatHistoryCreate(
-            chat_context_id=context_id,
-            chat_query=query.content,
-            chat_answer= jsonable_encoder(out),
-            chat_context = jsonable_encoder(chat_context),
-            chat_summary=out.get("summary", query.content),
-            user_id=user_id,
-            configuration_id=config_id,
-            environment_id=env_id
-        ),
-        db
-    )
 
-    if resp.status:
-        out["chat_id"] = resp.data["chat"].chat_id
 
+    background_tasks.add_task(save_data, context_id, query.content, out, chat_context, user_id,config_id, env_id, db)
+
+    logger.info(f"out:{out}")
 
     return {
         "response": out,

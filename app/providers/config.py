@@ -47,37 +47,52 @@ class Configs(BaseSettings):
 
     required_tables: List[str] = [
         "emp.Employees",
+        "emp.EmpSalaryDetails",
+        "emp.EmployeePFESIUNNO",
+        "emp.EmployeePFESIUNNO",
         "emp.vw_EmployeesList",
         "emp.FinalPayrollforNONTeaching",
         "emp.FinalPayrollforTeaching",
         "emp.FinalPayrollforStipend",
         "emp.RFIntrestForTeaching",
+        "emp.Relatives",
         "emp.GatePass",
         "emp.vw_EducationDetailsList",
+        "emp.vw_TicketingHeadList",
         "emp.bioattendance",
         "emp.BioAttendance",
         "emp.BioAttendanceTeaching",
         "emp.DocumentDetails",
         "emp.TeachingFinalPayRollVeryfication",
         "emp.LeaveDateWiseDetails",
+        "emp.EarningsMappings",
+        "emp.vw_LeaveDateWiseDeatilsList",
+        "emp.vw_NomineesList",
         "emp.LeaveBalance",
         "emp.TicketingHead",
         "emp.DependentDetails",
         "emp.vw_WorkingExperienceList",
         "emp.vw_EmployeesAddressList",
+        "emp.vw_EmployeesCovidVaccineList",
         "emp.TeachingLeaveBalance",
+        "emp.PayRollSetting",
+        "emp.WorkingExperience",
 
         "acom.ServicesCharges",
         "acom.AccommodationAllotment",
         "acom.BuildingMapping",
+        "acom.vw_BuildingMappingList",
         "acom.vw_AccommodationAllotmentList",
         "acom.vw_AccommodationAvailabilityList",
+        "acom.WifiService",
+
 
         "mst.PayCycle",
         "mst.Building",
         "mst.Department",
         "mst.FinancialYear",
         "mst.EmployeeDocumentType",
+        "mst.EarningCategoryDetail",
         "mst.NoticeBoard",
         "mst.JobType",
         "mst.Designation",
@@ -89,10 +104,13 @@ class Configs(BaseSettings):
         "mst.BloodGroup",
 
         "Vhc.BusAllotment",
+        "Vhc.vw_BusAllotmentList",
 
         "nac.vw_ActivityMonitoringList",
 
-        "Usr.Users"
+        "Usr.Users",
+        "usr.UserRoles",
+        "Usr.vw_RoleMenuPermissionList"
     ]
     user_roles: List[str] = [
         "account non-teaching",

@@ -96,12 +96,14 @@ __prompt__ = Prompt(**{
             - Do not return incomplete queries
             - Adher to sysql query syntax
             - The conversation history is arranged in strict chronological order from OLDEST to NEWEST.
+            - Always ensure there is at least one space between SQL keywords, column names, table names, and other SQL elements
 
             - To retrieve employees with salaries above a specified threshold Use UNION ALL on emp.FinalPayrollforNONTeaching, emp.FinalPayrollforTeaching, and emp.FinalPayrollforStipend, join with mst.PayCycle and mst.FinancialYear for default filters, and apply TRY_CAST(FPN.CurrentBasicSalary AS float) > [threshold]
             - Get the employee with the highest total NETELCTCharge for a given month, grouped by employee and ordered descending.
             - parents details means basically taking about father name
             - if only month name is given then take current year as year
             - To retrieve all columns of data for a specific employee from the emp.vw_EmployeesList view based on their ID, use SELECT * FROM emp.vw_EmployeesList WHERE Id = <EmployeeID>.
+            - To ensure that any input like "IT" is interpreted as "Information Technology" in your SQL query
             -- end rules section --
             """
         },
@@ -116,9 +118,10 @@ __prompt__ = Prompt(**{
             5. output in the given json format, extra explanation is strictly prohibited
             6. Striclty if it is a follow up from conversation history quesion then consider conversation history sql query to construct the query
             7. Stricltly make sure response is dependent on conversation history, context and user question
+            8. If the user wants to change to a table format, then convert the previous chat into a table visualization.
 
             {
-                "explanation": "Explain how you finalized the sql query using the schemas and rules provided or if its part of conversation history question",
+                "explanation": "Explain how you finalized the sql query using the schemas,samples and rules provided or if its part of conversation history question",
                 "query" : "mssql query to answer `$question` by strictly following the rules and conversation history",
                 "operation_kind" : "aggregation|list",
                 "schema": "used schema details separated by comma",
