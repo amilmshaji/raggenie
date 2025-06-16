@@ -2,7 +2,7 @@ from typing import Any
 from loguru import logger
 from app.base.abstract_handlers import AbstractHandler
 from app.providers.container import Container
-
+import time
 
 class Cachechecker(AbstractHandler):
     """
@@ -46,7 +46,12 @@ class Cachechecker(AbstractHandler):
         question = request.get("question", "")
 
         datasources = response["rag_filters"]["datasources"]
+
+        start_time = time.time()
         output = await self.cache.find_similar_cache(datasources[0], question)
+        end_time = time.time()
+        time_taken = end_time - start_time
+        logger.info(f"Time taken for cache retriever: {time_taken}")
         
         opt_doc = []
         if output and len(output) > 0 and output[0]['distances'] < self.context_relevance_threshold:

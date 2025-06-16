@@ -103,7 +103,8 @@ __prompt__ = Prompt(**{
             - parents details means basically taking about father name
             - if only month name is given then take current year as year
             - To retrieve all columns of data for a specific employee from the emp.vw_EmployeesList view based on their ID, use SELECT * FROM emp.vw_EmployeesList WHERE Id = <EmployeeID>.
-            - To ensure that any input like "IT" is interpreted as "Information Technology" in your SQL query
+            - ensure that any input like "IT" is interpreted as "Information Technology" in your SQL query
+            - Unless a column name is confirmed to exist in the table schema or samples, do not include it in the SELECT clause or query projection
             -- end rules section --
             """
         },
@@ -121,7 +122,7 @@ __prompt__ = Prompt(**{
             8. If the user wants to change to a table format, then convert the previous chat into a table visualization.
 
             {
-                "explanation": "Explain how you finalized the sql query using the schemas,samples and rules provided or if its part of conversation history question",
+                "explanation": "Explain how you finalized the sql query using the schemas and rules provided or if its part of conversation history question",
                 "query" : "mssql query to answer `$question` by strictly following the rules and conversation history",
                 "operation_kind" : "aggregation|list",
                 "schema": "used schema details separated by comma",

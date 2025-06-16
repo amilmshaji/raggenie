@@ -49,7 +49,6 @@ class Configs(BaseSettings):
         "emp.Employees",
         "emp.EmpSalaryDetails",
         "emp.EmployeePFESIUNNO",
-        "emp.EmployeePFESIUNNO",
         "emp.vw_EmployeesList",
         "emp.FinalPayrollforNONTeaching",
         "emp.FinalPayrollforTeaching",

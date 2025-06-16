@@ -93,10 +93,12 @@ class PromptGenerator(AbstractHandler):
                 tables.append(r.get("metadatas",{}).get("table_name","").lower())
 
             # logger.info(f"rag_schemas:{rag_schemas}")
+            added_tables = []
             for prev_schema in previous_schemas:
                 # logger.info(f"prev_schema:{prev_schema}")
                 table_name = prev_schema.get("metadatas",{}).get("table_name","")
-                if table_name.lower() not in tables:
+                if table_name.lower() not in tables and table_name.lower() not in added_tables:
+                    added_tables.append(table_name.lower())
                     # logger.info(f"table_name:{table_name}")
                     rag_schemas.append(prev_schema)            
             auto_schema = ""
