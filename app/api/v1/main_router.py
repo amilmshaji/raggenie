@@ -9,7 +9,7 @@ from app.api.v1 import llmchat
 from app.api.v1 import connector
 from sqlalchemy.orm import Session
 from app.utils.database import get_db
-
+import time
 
 MainRouter = APIRouter()
 
@@ -76,6 +76,8 @@ async def qna(
     if user_role == "user":
         user_role = "developer"
 
+    start_time = time.time()
+
     out = await chain.invoke({
         "question": query.content,
         "context_id": context_id,
@@ -90,6 +92,9 @@ async def qna(
 
     logger.info(f"out:{out}")
 
+    end_time = time.time()
+    total_response_time = end_time - start_time
+    logger.debug(f"total_response_time:{total_response_time}")
     return {
         "response": out,
         "query": query.content,
