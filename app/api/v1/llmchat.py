@@ -100,33 +100,71 @@ def list_chat_by_context(env_id: int, user_id: int,  db: Session = Depends(get_d
         error=None
     )
 
-# Get a specific chat by context ID
-@chat_router.get("/get/{context_id}", response_model=resp_schemas.CommonResponse)
-def get_chat_by_context(context_id: str, db: Session = Depends(get_db)):
+# # Get a specific chat by context ID
+# @chat_router.get("/get/{context_id}", response_model=resp_schemas.CommonResponse)
+# def get_chat_by_context(context_id: str, db: Session = Depends(get_db)):
 
+#     """
+#     Retrieves a specific chat by context ID from the database.
+
+#     Args:
+#         context_id (str): The ID of the context to retrieve the chat for.
+#         db (Session): Database session dependency.
+
+#     Returns:
+#         CommonResponse: A response containing either the chat data or an error message.
+#     """
+
+#     result, error = svc.list_all_chats_by_context_id(context_id, db)
+
+#     if error:
+#         return commons.is_error_response("DB Error", error, {"chats": []})
+
+#     if not result:
+#         return commons.is_none_reponse("Chat not found", {"chats": []})
+
+#     return resp_schemas.CommonResponse(
+#         status=True,
+#         status_code=200,
+#         data={"chats": result},
+#         message="Chat found",
+#         error=None
+#     )
+
+
+# Get paginated chats by context ID
+@chat_router.get("/get/{context_id}/{offset}/{limit}", response_model=resp_schemas.CommonResponse)
+def get_paginated_chats_by_context(
+    context_id: str,
+    offset: int = 0,
+    limit: int = 10,
+    db: Session = Depends(get_db)
+):
     """
-    Retrieves a specific chat by context ID from the database.
+    Retrieves paginated chat records by context ID from the database.
 
     Args:
-        context_id (str): The ID of the context to retrieve the chat for.
+        context_id (str): The ID of the context to retrieve chats for.
+        offset (int): The number of chats to skip (for pagination).
+        limit (int): The maximum number of chats to retrieve.
         db (Session): Database session dependency.
 
     Returns:
-        CommonResponse: A response containing either the chat data or an error message.
+        CommonResponse: A response with chat data or an error message.
     """
 
-    result, error = svc.list_all_chats_by_context_id(context_id, db)
+    result, error = svc.list_paginated_chats_by_context_id(context_id, offset, limit, db)
 
     if error:
         return commons.is_error_response("DB Error", error, {"chats": []})
 
     if not result:
-        return commons.is_none_reponse("Chat not found", {"chats": []})
+        return commons.is_none_reponse("No chats found", {"chats": []})
 
     return resp_schemas.CommonResponse(
         status=True,
         status_code=200,
         data={"chats": result},
-        message="Chat found",
+        message="Chats retrieved successfully",
         error=None
     )

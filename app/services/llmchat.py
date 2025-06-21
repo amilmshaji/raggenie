@@ -157,3 +157,40 @@ def list_all_chats_by_context_id(context_id: str, db: Session):
 
     return chat_data, None
 
+def list_paginated_chats_by_context_id(context_id: str, offset: int, limit: int, db: Session):
+    """
+    Retrieves paginated chat records based on context ID.
+
+    Args:
+        context_id (str): Context identifier to filter chats.
+        offset (int): Number of records to skip.
+        limit (int): Max records to fetch.
+        db (Session): SQLAlchemy session.
+
+    Returns:
+        Tuple: List of ChatResponse and error message.
+    """
+    result, is_error = repo.get_paginated_chats_by_context_id(context_id, offset, limit, db)
+
+    if is_error:
+        return result, "DB Error"
+
+    chat_data = [
+        schemas.ChatResponse(
+            chat_context_id=chat.chat_context_id,
+            chat_answer=chat.chat_answer,
+            chat_context={},
+            chat_id=chat.chat_id,
+            chat_query=chat.chat_query,
+            chat_status=chat.chat_status,
+            chat_summary=chat.chat_summary,
+            primary_chat=chat.primary_chat,
+            feedback_json=chat.feedback_json,
+            feedback_status=chat.feedback_status,
+            user_id=chat.user_id,
+            created_at=chat.created_at,
+            updated_at=chat.updated_at
+        ) for chat in result
+    ]
+
+    return chat_data, None

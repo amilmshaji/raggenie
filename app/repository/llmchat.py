@@ -75,3 +75,17 @@ def get_all_chats_by_context_id(context_id: str, db: Session):
         return data, False
     except SQLAlchemyError as e:
         return e, True
+
+def get_paginated_chats_by_context_id(context_id: str, offset: int, limit: int, db: Session):
+    try:
+        data = (
+            db.query(ChatHistory)
+            .filter(ChatHistory.chat_context_id == context_id)
+            .order_by(ChatHistory.created_at.desc())  # newest first
+            .offset(offset)
+            .limit(limit)
+            .all()
+        )
+        return data, False
+    except SQLAlchemyError as e:
+        return e, True
