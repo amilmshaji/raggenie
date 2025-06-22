@@ -1,6 +1,6 @@
 # src/endpoints/chat.py
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 import app.schemas.common as resp_schemas
 from app.schemas import llmchat as schemas
@@ -133,11 +133,11 @@ def list_chat_by_context(env_id: int, user_id: int,  db: Session = Depends(get_d
 
 
 # Get paginated chats by context ID
-@chat_router.get("/get/{context_id}/{offset}/{limit}", response_model=resp_schemas.CommonResponse)
+@chat_router.get("/get/{context_id}", response_model=resp_schemas.CommonResponse)
 def get_paginated_chats_by_context(
-    context_id: str,
-    offset: int = 0,
-    limit: int = 10,
+    context_id: str,    
+    offset: int = Query(0, description="Offset for pagination"),
+    limit: int = Query(10, description="Number of items per page"),
     db: Session = Depends(get_db)
 ):
     """
