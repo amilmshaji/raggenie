@@ -81,11 +81,12 @@ def get_paginated_chats_by_context_id(context_id: str, offset: int, limit: int, 
         data = (
             db.query(ChatHistory)
             .filter(ChatHistory.chat_context_id == context_id)
-            .order_by(ChatHistory.created_at.desc())  # newest first
+            .order_by(ChatHistory.created_at.desc())  # newest last
             .offset(offset)
             .limit(limit)
             .all()
         )
+        data = data[::-1]
         return data, False
     except SQLAlchemyError as e:
         return e, True

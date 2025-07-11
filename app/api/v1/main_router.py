@@ -13,8 +13,8 @@ import time
 
 MainRouter = APIRouter()
 
-def save_data(context_id, content, out, chat_context, user_id,config_id, env_id, db):
-    resp = llmchat.create_chat(
+async def save_data(context_id, content, out, chat_context, user_id,config_id, env_id, db):
+    resp = await llmchat.create_chat(
         schemas.ChatHistoryCreate(
             chat_context_id=context_id,
             chat_query=content,

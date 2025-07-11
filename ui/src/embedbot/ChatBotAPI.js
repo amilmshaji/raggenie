@@ -15,7 +15,7 @@ export const chatBotAPI = (contextId, configID, apiURL, message) => {
 };
 
 export const getChatByContext = (contextId, apiURL) => {
-  return GetService(apiURL + `/chat/get/${contextId}`,{},{allowAuthHeaders:false})
+  return GetService(apiURL + `/chat/get/${contextId}?offset=0&limit=100`,{},{allowAuthHeaders:false})
 }
 
 

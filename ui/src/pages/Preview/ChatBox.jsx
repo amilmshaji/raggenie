@@ -94,7 +94,7 @@ const PreviewChatBox = ({urlPrex = "/preview", selectedOption, setSelectedOption
     }
 
     const getChatByContexts =(contextId)=>{
-        GetService(API_URL + `/chat/get/${contextId}`,{},{allowAuthHeaders:false}).then(response=>{
+        GetService(API_URL + `/chat/get/${contextId}?offset=0&limit=100`,{},{allowAuthHeaders:false}).then(response=>{
             const chats = response.data.data.chats
             let tempChat = [];
             let tempChatDetails = [];

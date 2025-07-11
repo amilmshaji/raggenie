@@ -859,6 +859,7 @@ def update_datasource_documentations(db: Session, vector_store, datasources, id_
 
                 chunked_document, chunked_schema = sd.get_source_documents()
                 vector_store.clear_collection(config_id)
+                logger.info(f"clearing the vectordb with configuration id : {config_id}")
                 vector_store.prepare_data(key, chunked_document,chunked_schema, queries, int(config_id))
                 repo.update_configuration_status(config_id, 2, db)
 

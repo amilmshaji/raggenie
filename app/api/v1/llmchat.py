@@ -12,7 +12,7 @@ chat_router = APIRouter()
 
 # Create a new chat
 @chat_router.post("/create", response_model=resp_schemas.CommonResponse)
-def create_chat(chat: schemas.ChatHistoryCreate, db: Session = Depends(get_db)):
+async def create_chat(chat: schemas.ChatHistoryCreate, db: Session = Depends(get_db)):
 
     """
     Creates a new chat record in the database.
@@ -71,7 +71,7 @@ def create_feedback(feedback: schemas.FeedbackCreate, db: Session = Depends(get_
 
 # List the primary chat based on context
 @chat_router.get("/list/context/all/{env_id}/{user_id}", response_model=resp_schemas.CommonResponse)
-def list_chat_by_context(env_id: int, user_id: int,  db: Session = Depends(get_db)):
+async def list_chat_by_context(env_id: int, user_id: int,  db: Session = Depends(get_db)):
 
     """
     Retrieves all the primary chats based on context from the database.
@@ -134,7 +134,7 @@ def list_chat_by_context(env_id: int, user_id: int,  db: Session = Depends(get_d
 
 # Get paginated chats by context ID
 @chat_router.get("/get/{context_id}", response_model=resp_schemas.CommonResponse)
-def get_paginated_chats_by_context(
+async def get_paginated_chats_by_context(
     context_id: str,    
     offset: int = Query(0, description="Offset for pagination"),
     limit: int = Query(10, description="Number of items per page"),
