@@ -100,36 +100,6 @@ async def list_chat_by_context(env_id: int, user_id: int,  db: Session = Depends
         error=None
     )
 
-# # Get a specific chat by context ID
-# @chat_router.get("/get/{context_id}", response_model=resp_schemas.CommonResponse)
-# def get_chat_by_context(context_id: str, db: Session = Depends(get_db)):
-
-#     """
-#     Retrieves a specific chat by context ID from the database.
-
-#     Args:
-#         context_id (str): The ID of the context to retrieve the chat for.
-#         db (Session): Database session dependency.
-
-#     Returns:
-#         CommonResponse: A response containing either the chat data or an error message.
-#     """
-
-#     result, error = svc.list_all_chats_by_context_id(context_id, db)
-
-#     if error:
-#         return commons.is_error_response("DB Error", error, {"chats": []})
-
-#     if not result:
-#         return commons.is_none_reponse("Chat not found", {"chats": []})
-
-#     return resp_schemas.CommonResponse(
-#         status=True,
-#         status_code=200,
-#         data={"chats": result},
-#         message="Chat found",
-#         error=None
-#     )
 
 
 # Get paginated chats by context ID

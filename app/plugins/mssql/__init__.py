@@ -121,7 +121,6 @@ __prompt__ = Prompt(**{
             6. Striclty if it is a follow up from conversation history quesion then consider conversation history sql query to construct the query
             7. Stricltly make sure response is dependent on conversation history, context and user question
             8. If the user wants to change to a table format, then convert the previous chat into a table visualization.
- 
 
             {
                 "explanation": "Explain how you finalized the sql query using the schemas, samples and rules provided or if its part of conversation history question",
