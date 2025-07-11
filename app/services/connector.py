@@ -850,10 +850,8 @@ def update_datasource_documentations(db: Session, vector_store, datasources, id_
                         sd = SourceDocuments([], [], documentations)
                     case 2 | 5:
                         schema_config = connector_details.get("schema_config",[])
-                        logger.info(f"schema_config:{schema_config}")
-                        # schema_details, metadata = datasource.fetch_schema_details()
-                        print(f"555555551")
-                        sd = SourceDocuments([], schema_config, [])
+                        schema_details, metadata = datasource.fetch_schema_details()
+                        sd = SourceDocuments(metadata, schema_config, [])
                         queries = get_all_connector_samples(connector_details.get("id"), db)
                     case 4:
                         documentations = datasource.fetch_data()

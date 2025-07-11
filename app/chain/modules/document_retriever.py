@@ -4,6 +4,7 @@ from typing import Any
 from app.providers.container import Container
 import asyncio
 from app.providers.config import configs
+import time
 
 
 
@@ -41,6 +42,7 @@ class DocumentRetriever(AbstractHandler):
 
         logger.info("passing through => document_retriever")
         response = request
+        start_time = time.time()
         if configs.answer_from_enabled:
             datasource = configs.answer_from
             logger.info(f"datasource:{datasource}")
@@ -52,6 +54,9 @@ class DocumentRetriever(AbstractHandler):
                     for datasource in self.datasources
                 ]
             results = await asyncio.gather(*tasks)
+        end_time = time.time()
+        time_taken = end_time - start_time
+        logger.info(f"Time taken for document retriever: {time_taken}")
 
 
         logger.info("sorting retrieved documents")

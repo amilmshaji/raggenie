@@ -46,14 +46,20 @@ class PromptGenerator(AbstractHandler):
         intent = response["intent_extractor"]['intent']
 
         contexts = request.get("context",[])
-        previous_messages = contexts[-5:] if len(contexts) >= 5 else contexts
+        previous_messages = contexts[-2:] if len(contexts) >= 2 else contexts
 
         recal_history = ""
+        index = 1
+        
+        previous_schemas = []
         for message in previous_messages:
-            recal_history += f"USER: {message.chat_query}\n"
+            recal_history += f"[{index}] USER: {message.chat_query}\n"
             answer = message.chat_answer
             recal_history += f"ASSITANT: query : {answer.get('query','')}\n  data: {answer.get('data',[])[:5]}\n\n"
+            
+            previous_schemas.extend(message.chat_context.get("rag", {}).get("schema", [])[:2])
 
+            index += 1
         # Few shot prompting
         samples_retrieved = ""
 
@@ -80,7 +86,25 @@ class PromptGenerator(AbstractHandler):
             )
         else:
             auto_context = "\n\n".join(cont["document"] for cont in rag.get("context", {}).get(intent,[]))
-            auto_schema = "\n\n".join(schema["document"] for schema in rag.get("schema", []))
+            auto_schema = ""
+            rag_schemas = rag.get("schema", [])
+            tables = []
+            for r in rag_schemas:
+                tables.append(r.get("metadatas",{}).get("table_name","").lower())
+
+            # logger.info(f"rag_schemas:{rag_schemas}")
+            added_tables = []
+            for prev_schema in previous_schemas:
+                # logger.info(f"prev_schema:{prev_schema}")
+                table_name = prev_schema.get("metadatas",{}).get("table_name","")
+                if table_name.lower() not in tables and table_name.lower() not in added_tables:
+                    added_tables.append(table_name.lower())
+                    # logger.info(f"table_name:{table_name}")
+                    rag_schemas.append(prev_schema)            
+            auto_schema = ""
+            for schema in rag_schemas:
+                auto_schema += "\n\n" + schema["document"]
+            
             system_prompt_context = context.system_prompt
             system_prompt = system_prompt_context.template.format(
                 schema=auto_schema,

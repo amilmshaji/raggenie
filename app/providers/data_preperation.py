@@ -2,17 +2,21 @@ from loguru import logger
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 class SourceDocuments:
-    def __init__(self,schema_details, schema_configs, documentation):
+    def __init__(self,schema_data, schema_configs, documentation):
         self.documentation = []
         self.schema_details = []
         self.schema_configs = schema_configs
 
         self.documentation.extend(documentation)
+        for schema in schema_data:
+            table_user_roles = schema.get('user_roles', [])
+            table_name = schema['table_name']
+            self.schema_details.append({'content': schema.get('ddl',''), 'metadata': {"table_user_roles" : table_user_roles, "table_name" : table_name}})
+
 
         for schema_config in schema_configs:
             table_user_roles = schema_config.get('user_roles', [])
             table_name = schema_config['table_name']
-            self.schema_details.append({'content': schema_config.get('ddl',''), 'metadata': {"table_user_roles" : table_user_roles, "table_name" : table_name}})
             table_doc = ''
             table_doc = f"Table Name: {table_name} - {schema_config['description']}\n column are given below\n"
             for column in schema_config['columns']:

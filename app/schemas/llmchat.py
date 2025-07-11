@@ -7,6 +7,7 @@ class ChatHistoryBase(BaseModel):
     chat_context_id: str
     chat_query: str
     chat_answer: dict
+    chat_context: dict
     chat_summary: str
     chat_status: Optional[int]=None
     feedback_status: Optional[int]=None
