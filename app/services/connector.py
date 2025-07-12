@@ -17,7 +17,7 @@ from typing import Any, Dict, List
 
 
 
-def list_connectors(db: Session, user_id: str):
+async def list_connectors(db: Session, user_id: str):
 
     """
     Retrieves all connector records from the database.
@@ -53,7 +53,7 @@ def list_connectors(db: Session, user_id: str):
 
     return connectors_response, None
 
-def list_connectors_by_provider_category(category_ids: int, db: Session, user_id: str):
+async def list_connectors_by_provider_category(category_ids: int, db: Session, user_id: str):
     """
     Retrieves all connector records from the database filtered by provider category.
 
@@ -77,7 +77,7 @@ def list_connectors_by_provider_category(category_ids: int, db: Session, user_id
 
 
 
-def get_connector(connector_id: int, db: Session):
+async def get_connector(connector_id: int, db: Session):
 
     """
     Retrieves the details of a specific connector by its ID.
@@ -188,7 +188,7 @@ async def upload_pdf(file):
         return None, f"Failed to write file: {str(e)}"
 
 
-def create_connector(connector: schemas.ConnectorBase, db: Session, user_id: str):
+async def create_connector(connector: schemas.ConnectorBase, db: Session, user_id: str):
 
     """
     Creates a new connector record in the database.
@@ -267,7 +267,7 @@ def update_definitions(existing_definitions: List[Dict[str, Any]], new_definitio
 
     return new_definitions
 
-def update_connector(connector_id: int, connector: schemas.ConnectorUpdate, db: Session):
+async def update_connector(connector_id: int, connector: schemas.ConnectorUpdate, db: Session):
 
     """
     Updates an existing connector based on its ID.
@@ -330,7 +330,7 @@ def update_connector(connector_id: int, connector: schemas.ConnectorUpdate, db: 
 
     return connector_response, None
 
-def delete_connector(connector_id: int, db: Session):
+async def delete_connector(connector_id: int, db: Session):
 
     """
     Deletes a connector based on its ID.
@@ -366,7 +366,7 @@ def delete_connector(connector_id: int, db: Session):
     return connector_response, None
 
 
-def updateschemas(connector_id: int, connector: schemas.SchemaUpdate, db: Session):
+async def updateschemas(connector_id: int, connector: schemas.SchemaUpdate, db: Session):
 
     """
     Updates the schema configuration for a connector.
@@ -426,7 +426,7 @@ def get_inference_by_config_id(config_id:int , db:Session):
     ), None
 
 
-def list_configurations(db: Session, user_id: str):
+async def list_configurations(db: Session, user_id: str):
 
     """
     Retrieves all configurations from the database.
@@ -478,7 +478,7 @@ def list_configurations(db: Session, user_id: str):
 
     return config_list, None
 
-def get_configuration(db: Session, config_id: int):
+async def get_configuration(db: Session, config_id: int):
     """
     Retrieves a configuration by its ID.
 
@@ -547,7 +547,7 @@ def get_configuration(db: Session, config_id: int):
 
     return config_response, None
 
-def delete_configuration(db: Session, config_id: int):
+async def delete_configuration(db: Session, config_id: int):
     """
     Deletes a configuration by its ID.
 
@@ -586,7 +586,7 @@ def delete_configuration(db: Session, config_id: int):
     return config_response, None
 
 
-def create_configuration(configuration: schemas.ConfigurationCreation, db: Session, user_id: str):
+async def create_configuration(configuration: schemas.ConfigurationCreation, db: Session, user_id: str):
 
     """
     Creates a new configuration in the database.
@@ -625,7 +625,7 @@ def create_configuration(configuration: schemas.ConfigurationCreation, db: Sessi
 
     return config_response, None
 
-def update_configuration(config_id: int, configuration: schemas.ConfigurationUpdate, db: Session):
+async def update_configuration(config_id: int, configuration: schemas.ConfigurationUpdate, db: Session):
 
     """
     Updates an existing configuration based on its ID.
@@ -818,9 +818,9 @@ def delete_capability(cap_id: int, db: Session):
     return True, None
 
 
-def update_datasource_documentations(db: Session, vector_store, datasources, id_name_mappings, config_id, index):
+async def update_datasource_documentations(db: Session, vector_store, datasources, id_name_mappings, config_id, index):
         logger.info("Updating datasource documentations")
-        repo.update_configuration_status(config_id, 1, db)
+        await repo.update_configuration_status(config_id, 1, db)
         active_datsources = {}
         for key, datasource in datasources.items():
             connector_details = id_name_mappings.get(key, {})
@@ -848,6 +848,7 @@ def update_datasource_documentations(db: Session, vector_store, datasources, id_
                     case 1:
                         documentations = datasource.fetch_data()
                         sd = SourceDocuments([], [], documentations)
+                        queries = get_all_connector_samples(connector_details.get("id"), db)
                     case 2 | 5:
                         schema_config = connector_details.get("schema_config",[])
                         schema_details, metadata = datasource.fetch_schema_details()
@@ -860,14 +861,14 @@ def update_datasource_documentations(db: Session, vector_store, datasources, id_
                 chunked_document, chunked_schema = sd.get_source_documents()
                 vector_store.clear_collection(config_id)
                 vector_store.prepare_data(key, chunked_document,chunked_schema, queries, int(config_id))
-                repo.update_configuration_status(config_id, 2, db)
+                await repo.update_configuration_status(config_id, 2, db)
 
 
 
         return active_datsources, None
 
 
-def get_datasource_roleback_documentation(datasources, id_name_mappings):
+async def get_datasource_roleback_documentation(datasources, id_name_mappings):
         logger.info("getting all datasource roleback documentations")
         datsources_roleback = {}
         for key, datasource in datasources.items():
@@ -919,7 +920,7 @@ def get_datasource_roleback_documentation(datasources, id_name_mappings):
 
         return datsources_roleback, None
 
-def get_inference_and_plugin_configurations(db: Session, config_id: int):
+async def get_inference_and_plugin_configurations(db: Session, config_id: int):
 
     """
     Retrieves all inference and plugin configurations from the database.
@@ -932,24 +933,24 @@ def get_inference_and_plugin_configurations(db: Session, config_id: int):
     """
 
     configuration={}
-    connectors, status = repo.get_connectors_by_configuration_id(config_id, db)
+    connectors, status = await repo.get_connectors_by_configuration_id(config_id, db)
     if status:
         return configuration
-    configs, is_error = repo.get_configuration_by_id(config_id, db)
+    configs, is_error = await repo.get_configuration_by_id(config_id, db)
     if configs is None:
         configuration["models"]=[]
     else:
-        inference, is_error = create_inference_yaml(configs.id, db)
+        inference, is_error = await create_inference_yaml(configs.id, db)
         configuration["models"] = inference
 
     datasources = []
     mappings  = {}
 
     for conn in connectors:
-        provider, is_error = config_repo.get_provider_by_id(conn.connector_type, db)
+        provider, is_error = await config_repo.get_provider_by_id(conn.connector_type, db)
         if is_error:
             continue
-        datasource = formatting_datasource(conn, provider)
+        datasource = await formatting_datasource(conn, provider)
         if datasource:
 
             datasource['name'] = str(conn.connector_name).replace(" ", "_").lower()
@@ -963,7 +964,7 @@ def get_inference_and_plugin_configurations(db: Session, config_id: int):
     configuration["mappings"] = mappings
     return configuration
 
-def create_inference_yaml(config_id:int, db:Session):
+async def create_inference_yaml(config_id:int, db:Session):
 
     """
     Creates a YAML file for inference configurations based on the given configuration ID.
@@ -976,7 +977,7 @@ def create_inference_yaml(config_id:int, db:Session):
         Tuple: List of inference configurations and error message (if any).
     """
 
-    inference, is_error = repo.get_inferences_by_config_id(config_id, db)
+    inference, is_error = await repo.get_inferences_by_config_id(config_id, db)
 
     if is_error:
         return inference, "Inference configuration not found"
@@ -1011,7 +1012,7 @@ def get_all_connector_samples(connector_id: int, db: Session):
     return queries
 
 
-def create_yaml_file(request:Request, config_id: int, db: Session):
+async def create_yaml_file(request:Request, config_id: int, db: Session):
 
     """
     Creates a YAML file for configurations based on the given configuration ID.
@@ -1025,25 +1026,25 @@ def create_yaml_file(request:Request, config_id: int, db: Session):
 
     """
 
-    configuration, is_error = repo.get_configuration_by_id(config_id, db)
+    configuration, is_error = await repo.get_configuration_by_id(config_id, db)
     if (configuration == [] or configuration==None) or is_error:
         return None, None, "Configuration Not Found"
 
-    inferences, is_error = repo.get_inferences_by_config_id(config_id, db)
+    inferences, is_error = await repo.get_inferences_by_config_id(config_id, db)
     if (inferences == [] or inferences==None) or is_error:
         return None, None, "Inference configuration not found"
 
-    connectors, is_error = repo.get_connectors_by_configuration_id(config_id, db)
+    connectors, is_error = await repo.get_connectors_by_configuration_id(config_id, db)
     if (connectors == [] or connectors==None) or is_error:
         return None, None, "Connector not found"
 
     datasources = []
     for conn in connectors:
-        provider, is_error = config_repo.get_provider_by_id(conn.connector_type, db)
+        provider, is_error = await config_repo.get_provider_by_id(conn.connector_type, db)
         if is_error:
             continue
 
-        datasource = formatting_datasource(conn, provider)
+        datasource = await formatting_datasource(conn, provider)
         if datasource:
             datasource['name'] = str(conn.connector_name).replace(" ", "_").lower()
             datasource['description'] = conn.connector_description
@@ -1068,7 +1069,7 @@ def create_yaml_file(request:Request, config_id: int, db: Session):
 
 
 
-def formatting_datasource(connector, provider):
+async def formatting_datasource(connector, provider):
 
     """
     Formats the datasource based on the provider category.

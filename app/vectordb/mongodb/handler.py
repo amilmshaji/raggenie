@@ -172,7 +172,6 @@ class AltasMongoDB(BaseVectorDB):
             },
             {
             "$project": {
-            "_id" : 1,
             "datasource" : 1,
             "document": 1,
             "metadatas": 1,

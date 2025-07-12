@@ -19,7 +19,7 @@ async def save_data(context_id, content, out, chat_context, user_id,config_id, e
             chat_context_id=context_id,
             chat_query=content,
             chat_answer= jsonable_encoder(out),
-            chat_context = jsonable_encoder(chat_context),
+            chat_context = jsonable_encoder({}),
             chat_summary=out.get("summary", content),
             user_id=user_id,
             configuration_id=config_id,
@@ -61,7 +61,7 @@ async def qna(
     cached_data = cache_manager.get(int(config_id))
     if not cached_data:
         logger.info("configuration was not found in the cache")
-        response = connector.create_yaml(request, int(config_id), db, False)
+        response = await connector.create_yaml(request, int(config_id), db, False)
         if response['success'] == True:
             cached_data = cache_manager.get(int(config_id))
         else:

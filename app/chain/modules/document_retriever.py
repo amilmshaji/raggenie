@@ -74,11 +74,10 @@ class DocumentRetriever(AbstractHandler):
                     opt_doc = out
 
             if "rag" not in response:
-                response["rag"]= {"context" : {}}
-            # if configs.answer_from_enabled:
-            #     response["rag"]["context"][configs.answer_from] = opt_doc
-            # else:
-            response["rag"]["context"][list(self.datasources.keys())[index]] = opt_doc
+                response["rag"]= {"context" : {list(self.datasources.keys())[index] : []}}
+
+            response["rag"]["context"] = {list(self.datasources.keys())[index] : opt_doc}
+
 
         return await super().handle(response)
 

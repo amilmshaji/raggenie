@@ -2,7 +2,7 @@ from app.readers.text_reader import TxtLoader
 from app.readers.docx_reader import DocxReader
 from app.readers.yaml_reader import YamlLoader
 from app.readers.url_reader import UrlReader
-from app.readers.pdf_reader import PDFLoader
+# from app.readers.pdf_reader import PDFLoader
 
 from loguru import logger
 
@@ -22,8 +22,8 @@ class BaseReader:
                 loader = DocxReader(source=self.source)
             case "url":
                 loader = UrlReader(source=self.source)
-            case "pdf":
-                loader = PDFLoader(source=self.source)
+            # case "pdf":
+            #     loader = PDFLoader(source=self.source)
             case _:
                 raise ValueError(f"Documentation in given format '{type}' not supported.")
         return loader.load()

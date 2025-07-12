@@ -1,6 +1,6 @@
 from app.plugins.mssql.handler import Mssql
 from loguru import logger
-
+from app.plugins.website.handler import Website
 
 class DSLoader:
     def __init__(self, configs):
@@ -9,6 +9,7 @@ class DSLoader:
     def load_ds(self):
         db_classes = {
             "mssql": Mssql,
+            "website": Website,
         }
         db_type = self.config.get("type","")
         connection_params = self.config.get("params",{})

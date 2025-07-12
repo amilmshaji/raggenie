@@ -178,7 +178,6 @@ class ChromaDataBase(BaseVectorDB):
             where={"datasource": datasource}  # Filter by the datasource in the metadata
         )
 
-
         output = []
         if len(res["ids"]) > 0:
             for i in range(len(res["ids"][0])):
