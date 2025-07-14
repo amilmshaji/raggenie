@@ -489,7 +489,7 @@ async def get_configuration(db: Session, config_id: int):
     Returns:
         Tuple: Configuration response and error message (if any).
     """
-    configuration, is_error = repo.get_configuration_by_id(config_id, db)
+    configuration, is_error = await repo.get_configuration_by_id(config_id, db)
 
     if is_error:
         return configuration, "DB Error"

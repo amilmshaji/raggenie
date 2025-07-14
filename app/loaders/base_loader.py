@@ -3,7 +3,7 @@ from app.loaders.ollama.loader import OllamaModelLoader
 from app.loaders.togethor.loader import TogethorModelLoader
 from app.loaders.openai.loader import OpenAiModelLoader
 from app.loaders.ai71.loader import Ai71ModelLoader
-
+from app.loaders.grogcloud.loader import GrogcloudLoader
 
 
 class BaseLoader:
@@ -22,6 +22,8 @@ class BaseLoader:
                         loader = Ai71ModelLoader(model_config = model)
                     case "ollama":
                         loader = OllamaModelLoader(model_config = model)
+                    case "grogcloud":
+                        loader = GrogcloudLoader(model_config = model)
                     case _ :
                         raise ValueError(f"Model with the inference provider '{model['kind']}' with the unique name '{unique_name}' was not found")
                 return loader

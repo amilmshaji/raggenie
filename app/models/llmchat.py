@@ -6,7 +6,7 @@ from app.utils.database import Base
 class ChatHistory(Base):
     __tablename__ = 'chat_histories'
 
-    chat_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    chat_id = Column(String, primary_key=True, index=True)
     chat_context_id = Column(String, index=True, nullable=False)
     chat_query = Column(String, nullable=False)
     chat_answer = Column(JSON, nullable=False)
