@@ -8,7 +8,7 @@ from typing import List
 from app.models.environment import UserEnvironmentMapping
 
 
-async def get_connectors_by_configuration_id(configuration_id: int, db: Session):
+def get_connectors_by_configuration_id(configuration_id: int, db: Session):
     try:
         connectors = (
             db.query(models.Connector)
@@ -260,7 +260,7 @@ def update_existing_configuration(config_id: int, configuration: schemas.Configu
         db.rollback()
         return str(e), True
 
-async def get_configuration_by_id(config_id: int, db: Session):
+def get_configuration_by_id(config_id: int, db: Session):
     try:
         return (
             db.query(models.Configuration)
@@ -288,9 +288,9 @@ def delete_configuration_by_id(configuration_id: int, db: Session):
         db.rollback()
         return str(e), True
 
-async def update_configuration_status(config_id: int,status: int, db: Session):
+def update_configuration_status(config_id: int,status: int, db: Session):
     try:
-        db_config, is_error = await get_configuration_by_id(config_id, db)
+        db_config, is_error = get_configuration_by_id(config_id, db)
 
         if db_config and not is_error:
             db_config.status = status
@@ -486,7 +486,7 @@ def update_inference(inference_id: int, inference: schemas.InferenceBaseUpdate, 
         db.rollback()
         return str(e), True
 
-async def get_inferences_by_config_id(config_id: int, db: Session):
+def get_inferences_by_config_id(config_id: int, db: Session):
     try:
         return db.query(models.Inferenceconfigmapping).options(joinedload(models.Inferenceconfigmapping.inference)).filter(models.Inferenceconfigmapping.config_id == config_id).all(), False
     except SQLAlchemyError as e:

@@ -85,7 +85,7 @@ const SampleForm = ({ sample = {}, afterCreate = ()=>{}, onCancel = ()=>{}})=>{
 
                 </div>
                 <div>
-                    <Textarea label={<span className="span-important">Answer/Query</span>} rows={6} style={{resize: "vertical"}} hasError={errors["query"]?.message} errorMessage={errors["query"]?.message} {...register("query", {required: "This is required"})}  />
+                    <Textarea label={<span className="span-important">Query</span>} rows={6} style={{resize: "vertical"}} hasError={errors["query"]?.message} errorMessage={errors["query"]?.message} {...register("query", {required: "This is required"})}  />
                 </div>
                 <div>
                     <Textarea label="Metadata" rows={6} style={{resize: "vertical"}} hasError={errors["metadata"]?.message} errorMessage={errors["metadata"]?.message} {...register("metadata")} />

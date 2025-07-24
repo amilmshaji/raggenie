@@ -58,7 +58,6 @@ class IntentExtracter(AbstractHandler):
             capabilities = use_case.get("capabilities", [])
             rag = request.get("rag", {})
             context = rag.get("context", {})
-            suggestions = rag.get("suggestions", {})
 
             capability_description = ""
             capability_names = ["out_of_context"]
@@ -74,28 +73,26 @@ class IntentExtracter(AbstractHandler):
             datasource_names = []
             for datasource in datasources:
                 if datasource["name"] in self.datasources:
+                    if self.datasources[datasource["name"]].__category__ in [2,5] and "metadata_inquiry" not in capability_names:
+                        capability_names.append("metadata_inquiry")
                     name = datasource["name"]
                     description = datasource["description"]
 
                     capability_names.append(name)
                     datasource_names.append(name)
                     capability_description += f"\n{name} : {description}\n"
-                    datasource_context = context.get(name, [])
+                    datasource_context = context[name]
                     for index,cont in enumerate(datasource_context[:2]):
                         if index == 0:
                             capability_description += f"{cont.get('document','')}\n"
                         else:
                             capability_description += f"{cont.get('document','')}\n"
-                    suggestion_context = suggestions.get(name, [])
-                    capability_description += "\n Sample questions under this intent: \n"
-                    for index,cont in enumerate(suggestion_context[:2]):
-                        if index == 0:
-                            capability_description += f"Question:{cont.get('document','')}\n"
-                        else:
-                            capability_description += f"Question:{cont.get('document','')}\n"
 
                     
             response["available_datasources"] = datasource_names
+
+            if "metadata_inquiry" in capability_names:
+                capability_description += "\n\nmetadata_inquiry : queries about overview of available data, the structure of a database (including tables and columns), the meaning behind specific columns, and the purpose within a database context, eg: what kind of data you have? or list questions which can be asked?\n"
 
             chat_contexts = request.get("context", [])
             previous_intent = chat_contexts[-1].chat_answer.get("intent","") if len(chat_contexts) > 0 else "None"
@@ -120,6 +117,8 @@ class IntentExtracter(AbstractHandler):
             1.Only one intent must be identified.Multiple intents are prohibited.
             2.Pay special attention to whether the previous intent has been completed.
             3.Strictly only if the current user query doesn't clearly match an intent, consider the previous messages to identify the most appropriate intent.
+            3.If user seeks data structure info or data overview, label intent as metadata_inquiry.
+            4.When asked to list possible questions, provide general examples without mentioning "specific" word
 
             Generate a response for the user query '$question' in the following JSON format:
 

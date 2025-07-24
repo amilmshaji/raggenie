@@ -64,7 +64,6 @@ def create_feedback(feedback: schemas.FeedbackCreate, db: Session):
         chat_answer=result.chat_answer,
         chat_id=result.chat_id,
         chat_query=result.chat_query,
-        chat_context=result.chat_context,
         chat_status=result.chat_status,
         chat_summary=result.chat_summary,
         primary_chat=result.primary_chat,

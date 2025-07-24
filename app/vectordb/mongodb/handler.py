@@ -61,7 +61,9 @@ class AltasMongoDB(BaseVectorDB):
 
 
     def clear_collection(self, config_id):
-        logger.info(f"clearing collection for config id: {config_id}")
+    #     self.schema_collection.delete_many({})  # Delete all documents in the collection
+    #     self.doc_collection.delete_many({})
+    #     self.cache_collection.delete_many({})
         self.config_id = config_id
         self.cache_collection.delete_many({ "metadatas.config_id": config_id })
         self.schema_collection.delete_many({ "metadatas.config_id": config_id })
@@ -170,6 +172,7 @@ class AltasMongoDB(BaseVectorDB):
             },
             {
             "$project": {
+            "_id" : 1,
             "datasource" : 1,
             "document": 1,
             "metadatas": 1,
