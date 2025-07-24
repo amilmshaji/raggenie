@@ -9,7 +9,6 @@ from app.api.v1.connector import cap_router as capabilityrouter
 from app.api.v1.connector import inference_router as inference_router
 from app.api.v1.connector import actions as actions
 from app.api.v1.provider import sample as sample_sql
-from app.api.v1.feedback_router import feedback as feedback
 from app.api.v1.auth import login as login
 import app.repository.connector as repo
 import app.services.connector_details as commonservices
@@ -139,7 +138,6 @@ def create_app(config):
     app.include_router(sample_sql, prefix="/api/v1/sql")
     app.include_router(login, prefix="/api/v1/auth")
     app.include_router(vectordb, prefix="/api/v1/vectordb")
-    app.include_router(feedback,prefix="/api/v1/feedback")
 
     curr_schema = app.openapi()
     curr_schema["info"]["title"] = "Rag genie Chat API"

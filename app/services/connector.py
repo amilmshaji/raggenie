@@ -822,6 +822,7 @@ async def update_datasource_documentations(db: Session, vector_store, datasource
         logger.info("Updating datasource documentations")
         await repo.update_configuration_status(config_id, 1, db)
         active_datsources = {}
+        clear_collection_list = []
         for key, datasource in datasources.items():
             connector_details = id_name_mappings.get(key, {})
             if "id" not in connector_details:
@@ -859,7 +860,10 @@ async def update_datasource_documentations(db: Session, vector_store, datasource
                         sd = SourceDocuments([], [], documentations)
 
                 chunked_document, chunked_schema = sd.get_source_documents()
-                vector_store.clear_collection(config_id)
+                logger.info(f"clear_collection_list:{clear_collection_list}")
+                if config_id not in clear_collection_list:  
+                    vector_store.clear_collection(config_id)
+                    clear_collection_list.append(config_id)
                 vector_store.prepare_data(key, chunked_document,chunked_schema, queries, int(config_id))
                 await repo.update_configuration_status(config_id, 2, db)
 
