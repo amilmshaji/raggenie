@@ -3,8 +3,6 @@ from loguru import logger
 from app.base.abstract_handlers import AbstractHandler
 from app.providers.container import Container
 import time
-import asyncio
-from app.providers.config import configs
 
 class Cachechecker(AbstractHandler):
     """
@@ -14,7 +12,7 @@ class Cachechecker(AbstractHandler):
     if a query exists in the cache and handle the response accordingly.
     """
 
-    def __init__(self,common_context, datasources, cachestore, forward_handler = None, forward: bool = False) -> None:
+    def __init__(self,common_context, cachestore, forward_handler, forward: bool = True) -> None:
         """
         Initialize the Cachechecker.
 
@@ -29,8 +27,6 @@ class Cachechecker(AbstractHandler):
         self.forward = forward
         self.common_context = common_context
         self.context_relevance_threshold = 4
-        self.datasources = datasources
-
 
 
 
@@ -49,45 +45,37 @@ class Cachechecker(AbstractHandler):
         response = request
         question = request.get("question", "")
 
+        datasources = response["rag_filters"]["datasources"]
+
         start_time = time.time()
-        if configs.answer_from_enabled:
-            datasource = configs.answer_from
-            results = [await self.cache.find_similar_cache(datasource, question)]
-
-        else:
-            tasks = [
-                    self.cache.find_similar_cache(datasource, question)
-                    for datasource in self.datasources
-                ]
-            results = await asyncio.gather(*tasks)
-
+        output = await self.cache.find_similar_cache(datasources[0], question)
         end_time = time.time()
         time_taken = end_time - start_time
         logger.info(f"Time taken for cache retriever: {time_taken}")
+        
+        opt_doc = []
+        if output and len(output) > 0 and output[0]['distances'] < self.context_relevance_threshold:
+            distances = [doc['distances'] for doc in output]
+            logger.info(f"distances:{distances}")
+            if len(output) > 5:
+                clusters = Container.clustering().kmeans(distances, 2)
+                shortest_cluster = clusters[0]
+                for doc in output:
+                    if doc['distances'] in shortest_cluster:
+                        opt_doc.append(doc)
 
-        logger.info("sorting retrieved cache")
-        for index, out in enumerate(results):
-            opt_cache = []
-            if out and len(out) > 0 and out[0]['distances'] < self.context_relevance_threshold:
-                distances = [doc['distances'] for doc in out]
-                if len(out) > 5:
-                    clusters = Container.clustering().kmeans(distances, 2)
-                    shortest_cluster = clusters[0]
-                    for doc in out:
-                        if doc['distances'] in shortest_cluster:
-                            opt_cache.append(doc)
-                else:
-                    opt_cache = out
-
-            if "rag" not in response:
-                response["rag"]= {"suggestions" : {}}
-
-            response["rag"]["suggestions"] = {list(self.datasources.keys())[index] : opt_cache}
+        if "rag" not in response:
+            response["rag"] = {
+                "suggestions": output
+            }
+        else:
+            response["rag"]["suggestions"] = output
 
 
-        if self.forward and len(results) > 0:
-            if results[0]["distances"] < -10:
-                result = results[0]["metadatas"]
+
+        if self.forward and len(output) > 0:
+            if output[0]["distances"] < -10:
+                result = output[0]["metadatas"]
                 logger.info("query retrieved from cache")
                 return await self.forward_handler.handle({"inference":result})
 

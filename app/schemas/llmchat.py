@@ -18,11 +18,11 @@ class ChatHistoryBase(BaseModel):
     environment_id: Optional[int]=None
 
 class ChatHistoryCreate(ChatHistoryBase):
-    chat_id: str
+    pass
 
 
 class ChatHistory(ChatHistoryBase):
-    chat_id: str
+    chat_id: int
 
 
 class ChatResponse(ChatHistory):
@@ -31,7 +31,7 @@ class ChatResponse(ChatHistory):
 
 class FeedbackCreate(BaseModel):
     chat_context_id: str
-    chat_id: str
+    chat_id: int
     feedback_status: int
     feedback_json: Optional[Dict] = None
 

@@ -73,7 +73,6 @@ assets/datasource
 context_store.db
 test_db.db
 csv_db.sqlite
-raggenie.db
 
 # node_modules folder
 ui/node_modules

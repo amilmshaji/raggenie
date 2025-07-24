@@ -28,7 +28,7 @@ inference_router = APIRouter()
 actions = APIRouter()
 
 @router.get("/list", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
-async def list_connectors(db: Session = Depends(get_db), provider_category_ids:  Optional[List[int]] = None, user_data: dict = Depends(verify_token)):
+def list_connectors(db: Session = Depends(get_db), provider_category_ids:  Optional[List[int]] = None, user_data: dict = Depends(verify_token)):
 
     """
     Retrieves a list of all connectors from the database. If a provider category ID is provided, only connectors from that category are returned.
@@ -41,9 +41,9 @@ async def list_connectors(db: Session = Depends(get_db), provider_category_ids: 
     """
     user_id = user_data["user_id"]
     if provider_category_ids:
-        result, error = await svc.list_connectors_by_provider_category(provider_category_ids, db, user_id)
+        result, error = svc.list_connectors_by_provider_category(provider_category_ids, db, user_id)
     else:
-        result, error = await svc.list_connectors(db, user_id)
+        result, error = svc.list_connectors(db, user_id)
 
     if error:
         return commons.is_error_response("DB Error", result, {"connectors": []})
@@ -60,7 +60,7 @@ async def list_connectors(db: Session = Depends(get_db), provider_category_ids: 
     )
 
 @router.get("/get/{connector_id}", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
-async def get_connector(connector_id: int, db: Session = Depends(get_db)):
+def get_connector(connector_id: int, db: Session = Depends(get_db)):
 
     """
     Retrieves a specific connector by its ID from the database.
@@ -73,7 +73,7 @@ async def get_connector(connector_id: int, db: Session = Depends(get_db)):
         CommonResponse: A response containing either the connector details or an error message.
     """
 
-    result, error = await svc.get_connector(connector_id, db)
+    result, error = svc.get_connector(connector_id, db)
 
     if error:
         return commons.is_error_response("DB Error", result, {"connector": {}})
@@ -123,7 +123,7 @@ async def upload_document_datsource(
     )
 
 @router.post("/create", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
-async def create_connector(connector: schemas.ConnectorBase, db: Session = Depends(get_db), user_data: dict = Depends(verify_token)):
+def create_connector(connector: schemas.ConnectorBase, db: Session = Depends(get_db), user_data: dict = Depends(verify_token)):
 
     """
     Creates a new connector in the database.
@@ -136,7 +136,7 @@ async def create_connector(connector: schemas.ConnectorBase, db: Session = Depen
         CommonResponse: A response indicating success or failure of the connector creation process.
     """
     user_id = user_data["user_id"]
-    result, error = await svc.create_connector(connector, db, user_id)
+    result, error = svc.create_connector(connector, db, user_id)
     if error:
         return commons.is_error_response("Connector Not Created", error, {"connector": {}})
 
@@ -149,7 +149,7 @@ async def create_connector(connector: schemas.ConnectorBase, db: Session = Depen
     )
 
 @router.post("/update/{connector_id}", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
-async def update_connector(connector_id: int, connector: schemas.ConnectorUpdate, db: Session = Depends(get_db)):
+def update_connector(connector_id: int, connector: schemas.ConnectorUpdate, db: Session = Depends(get_db)):
 
     """
     Updates an existing connector based on its ID.
@@ -163,7 +163,7 @@ async def update_connector(connector_id: int, connector: schemas.ConnectorUpdate
         CommonResponse: A response indicating success or failure of the update process.
     """
 
-    result, error = await svc.update_connector(connector_id, connector, db)
+    result, error = svc.update_connector(connector_id, connector, db)
 
     if error:
         return commons.is_error_response("DB Error", result, {"connector": {}})
@@ -180,7 +180,7 @@ async def update_connector(connector_id: int, connector: schemas.ConnectorUpdate
     )
 
 @router.post("/delete/{connector_id}", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
-async def delete_connector(connector_id: int, db: Session = Depends(get_db)):
+def delete_connector(connector_id: int, db: Session = Depends(get_db)):
 
     """
     Deletes a connector from the database based on its ID.
@@ -210,7 +210,7 @@ async def delete_connector(connector_id: int, db: Session = Depends(get_db)):
     )
 
 @router.post("/schema/update/{connector_id}", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
-async def updateschemas(connector_id: int, connector: schemas.SchemaUpdate, db: Session = Depends(get_db)):
+def updateschemas(connector_id: int, connector: schemas.SchemaUpdate, db: Session = Depends(get_db)):
 
     """
     Updates the schema details of a connector based on its ID.
@@ -224,7 +224,7 @@ async def updateschemas(connector_id: int, connector: schemas.SchemaUpdate, db: 
         CommonResponse: A response indicating success or failure of the schema update.
     """
 
-    result, error = await svc.updateschemas(connector_id, connector, db)
+    result, error = svc.updateschemas(connector_id, connector, db)
 
     if error:
         return commons.is_error_response("DB Error", result, {"schemas": {}})
@@ -243,7 +243,7 @@ async def updateschemas(connector_id: int, connector: schemas.SchemaUpdate, db: 
 
 
 @router.get("/configuration/list", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
-async def list_configurations(db: Session = Depends(get_db), user_data: dict = Depends(verify_token)):
+def list_configurations(db: Session = Depends(get_db), user_data: dict = Depends(verify_token)):
 
     """
     Lists all available configurations from the database.
@@ -255,7 +255,7 @@ async def list_configurations(db: Session = Depends(get_db), user_data: dict = D
         CommonResponse: A response containing the list of configurations or an error message.
     """
     user_id = user_data["user_id"]
-    result, error = await svc.list_configurations(db, user_id)
+    result, error = svc.list_configurations(db, user_id)
 
     if error:
         return commons.is_error_response("DB error", result, {"configurations": []})
@@ -272,7 +272,7 @@ async def list_configurations(db: Session = Depends(get_db), user_data: dict = D
     )
     
 @router.get("/configuration/{config_id}", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
-async def get_configuration(config_id: int, db: Session = Depends(get_db)):
+def get_configuration(config_id: int, db: Session = Depends(get_db)):
     """
     Retrieves a configuration by its ID.
 
@@ -283,7 +283,7 @@ async def get_configuration(config_id: int, db: Session = Depends(get_db)):
     Returns:
         CommonResponse: A response containing the configuration or an error message.
     """
-    result, error = await svc.get_configuration(db, config_id)
+    result, error = svc.get_configuration(db, config_id)
 
     if error == "DB Error":
         return commons.is_error_response("DB error", result, {"configuration": None})
@@ -300,7 +300,7 @@ async def get_configuration(config_id: int, db: Session = Depends(get_db)):
     )
     
 @router.delete("/configuration/{config_id}", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
-async def get_configuration(config_id: int, db: Session = Depends(get_db)):
+def get_configuration(config_id: int, db: Session = Depends(get_db)):
     """
     Retrieves a configuration by its ID.
 
@@ -311,7 +311,7 @@ async def get_configuration(config_id: int, db: Session = Depends(get_db)):
     Returns:
         CommonResponse: A response containing the configuration or an error message.
     """
-    result, error = await svc.delete_configuration(db, config_id)
+    result, error = svc.delete_configuration(db, config_id)
 
     if error == "DB Error":
         return commons.is_error_response("DB error", result, {"configuration": None})
@@ -329,7 +329,7 @@ async def get_configuration(config_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/configuration/create", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
-async def create_configuration(configuration: schemas.ConfigurationCreation, db: Session = Depends(get_db), user_data: dict = Depends(verify_token)):
+def create_configuration(configuration: schemas.ConfigurationCreation, db: Session = Depends(get_db), user_data: dict = Depends(verify_token)):
 
     """
     Creates a new configuration and stores it in the database.
@@ -361,7 +361,7 @@ async def create_configuration(configuration: schemas.ConfigurationCreation, db:
     )
 
 @router.post("/configuration/update/{config_id}", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
-async def update_configuration(config_id: int, configuration: schemas.ConfigurationUpdate, db: Session = Depends(get_db)):
+def update_configuration(config_id: int, configuration: schemas.ConfigurationUpdate, db: Session = Depends(get_db)):
 
     """
     Updates an existing configuration in the database.
@@ -375,7 +375,7 @@ async def update_configuration(config_id: int, configuration: schemas.Configurat
         CommonResponse: A response indicating the success or failure of the configuration update.
     """
 
-    result, error = await svc.update_configuration(config_id, configuration, db)
+    result, error = svc.update_configuration(config_id, configuration, db)
 
     if error:
         return commons.is_error_response("DB error", result, {"configuration": []})
@@ -524,7 +524,7 @@ def delete_capability(cap_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/createyaml/{config_id}", dependencies=[Depends(verify_token)])
-async def create_yaml(request: Request, config_id: int, db: Session = Depends(get_db), index: Optional[bool] = True):
+def create_yaml(request: Request, config_id: int, db: Session = Depends(get_db), index: Optional[bool] = True):
 
     """
     Creates a YAML configuration file and initializes processing chains for the specified configuration.
@@ -538,7 +538,7 @@ async def create_yaml(request: Request, config_id: int, db: Session = Depends(ge
         dict: A dictionary with success status and error message, if any.
     """
 
-    documentations, use_case, is_error = await svc.create_yaml_file(request,config_id, db)
+    documentations, use_case, is_error = svc.create_yaml_file(request,config_id, db)
 
     if is_error:
         return {
@@ -546,7 +546,7 @@ async def create_yaml(request: Request, config_id: int, db: Session = Depends(ge
             "error":is_error
         }
 
-    inference_config, is_error = await svc.create_inference_yaml(config_id,db)
+    inference_config, is_error = svc.create_inference_yaml(config_id,db)
 
     if is_error and not inference_config:
         return {
@@ -563,7 +563,7 @@ async def create_yaml(request: Request, config_id: int, db: Session = Depends(ge
     configs.inference_llm_model=inference_config[0]["unique_name"]
 
     config = request.app.config
-    vector_store, is_error = await provider_svc.create_vectorstore_instance(db, config_id)
+    vector_store, is_error = provider_svc.create_vectorstore_instance(db, config_id)
     if vector_store:
         vector_store.connect()
     context_storage = request.app.context_storage
@@ -575,14 +575,14 @@ async def create_yaml(request: Request, config_id: int, db: Session = Depends(ge
     config["datasources"] = data_sources
     config["models"] = inference_config
 
-    confyaml = await svc.get_inference_and_plugin_configurations(db, config_id)
+    confyaml = svc.get_inference_and_plugin_configurations(db, config_id)
     request.app.container.config.from_dict(confyaml)
     datasources = request.app.container.datasources()
 
     mappings = confyaml.get("mappings",{})
-    datasources, err = await svc.update_datasource_documentations(db, vector_store, datasources, mappings, config_id, index)
+    datasources, err = svc.update_datasource_documentations(db, vector_store, datasources, mappings, config_id, index)
 
-    roleback_context, error = await svc.get_datasource_roleback_documentation(datasources, mappings)
+    roleback_context, error = svc.get_datasource_roleback_documentation(datasources, mappings)
     if error:
         logger.error("Error updating")
 

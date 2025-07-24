@@ -64,8 +64,8 @@ class PromptGenerator(AbstractHandler):
         samples_retrieved = ""
 
         rag = request.get("rag", {})
-        datasource_suggestions = rag.get("suggestions", {})
-        for doc in datasource_suggestions.get(intent, []):
+        suggestions = rag.get("suggestions", [])
+        for doc in suggestions:
             samples_retrieved += f"question: {doc.get('document', '')}\n"
             samples_retrieved += f"query: {doc.get('metadatas', {}).get('query', '')}\n\n"
 
