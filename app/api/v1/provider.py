@@ -46,7 +46,7 @@ def list_providers(db: Session = Depends(get_db)):
     )
 
 @router.get("/get/{provider_id}", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
-def get_provider(provider_id: int, db: Session = Depends(get_db)):
+async def get_provider(provider_id: int, db: Session = Depends(get_db)):
 
     """
     Retrieves a specific provider (plugin) by its ID.
@@ -59,7 +59,7 @@ def get_provider(provider_id: int, db: Session = Depends(get_db)):
         CommonResponse: A response containing either the provider details or an error message.
     """
 
-    result, error=svc.get_provider(provider_id, db)
+    result, error= await svc.get_provider(provider_id, db)
 
     if error:
         return commons.is_error_response("DB error", result, {"provider": {}})

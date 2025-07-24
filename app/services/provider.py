@@ -168,7 +168,7 @@ def list_providers(db: Session):
 
     return provider_list, None
 
-def get_provider(provider_id: int,db: Session):
+async def get_provider(provider_id: int,db: Session):
 
     """
     Retrieves the details of a specific provider by its ID.
@@ -181,7 +181,7 @@ def get_provider(provider_id: int,db: Session):
         (schemas.ProviderResp, str | None): The provider details or an error message.
     """
 
-    provider, is_error = repo.get_provider_by_id(provider_id,db)
+    provider, is_error = await repo.get_provider_by_id(provider_id,db)
 
     if is_error:
         return provider, "DB Error"
