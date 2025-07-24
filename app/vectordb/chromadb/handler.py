@@ -53,6 +53,7 @@ class ChromaDataBase(BaseVectorDB):
             return str(e)
         
     def clear_collection(self, config_id):
+        logger.info(f"clearing collection for config id: {config_id}")
         self.config_id = config_id
         self.schema_store.delete(where={"config_id": config_id})
         self.cache_store.delete(where={"config_id": config_id})
@@ -177,7 +178,6 @@ class ChromaDataBase(BaseVectorDB):
             n_results=sample_count,
             where={"datasource": datasource}  # Filter by the datasource in the metadata
         )
-
 
         output = []
         if len(res["ids"]) > 0:

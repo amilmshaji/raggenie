@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from app.models.llmchat import ChatHistory
 from app.schemas import llmchat as schemas
 from sqlalchemy.exc import SQLAlchemyError
-
+from loguru import logger
 
 
 def get_chat_by_context_and_id(chat_context_id: str, chat_id: int, db: Session):

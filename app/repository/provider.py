@@ -40,7 +40,7 @@ def get_all_providers(db: Session):
     except SQLAlchemyError as e:
         return e, True
 
-def get_provider_by_id(provider_id: int, db: Session):
+async def get_provider_by_id(provider_id: int, db: Session):
     try:
         provider = db.query(models.Provider).options(joinedload(models.Provider.providerconfig)).filter(models.Provider.id == provider_id).first()
         return provider, False
