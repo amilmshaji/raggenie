@@ -44,11 +44,8 @@ class SchemaRetriever(AbstractHandler):
 
         schema_count = request.get('rag_filters', {}).get("schema_count", 0)
         datasources = response["rag_filters"]["datasources"]
-        logger.info(f"datasources:{datasources}")
         rag = request.get("rag", {})
-        logger.info(f"rag:{rag}")
         doc_content = rag.get("context", []).get(datasources[0])
-        logger.info(f"doc_content:{doc_content}")
 
         auto_context = "\n\n".join(cont.get("document", "") for cont in doc_content)
 

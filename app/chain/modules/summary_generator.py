@@ -54,24 +54,26 @@ class SummaryGenerator(AbstractHandler):
                                 data_description = f"{general_message} \n {query_response}"
                         else:
                                 data_description = "None"
-                        prompt = '''You are a helpful assistant. Answer the user's question using the information provided below.
+                        prompt = '''You are a friendly and helpful assistant. Kindly answer the user's question using only the information provided below.
 
-                                Question: $question
+                        Question: $question
 
-                                -- Data --
-                                $data_description
-                                -- End of Data --
+                        -- Data --
+                        $data_description
+                        -- End of Data --
 
-                                Instructions:
-                                - Focus on answering the question clearly and accurately.
-                                - Use only the relevant information from the data.
-                                - Keep the response concise and to the point.
-                                - Do not mention that the information came from the data section.
-                                - If no specific data is available to answer the question, return an empty response that aligns with the intent of the question—do not provide generic or assumed answers.
-                                - Response should be in plan text format, not markdown or html.
+                        Instructions:
+                        - Respond in a polite and respectful tone.
+                        - Focus on answering the question clearly and accurately.
+                        - Use only the relevant information from the data.
+                        - Keep the response concise and to the point.
+                        - Do not mention that the information came from the data section.
+                        - If there is no relevant data to answer the question, return a gentle, empty response that aligns with the intent—avoid guesses or general assumptions.
+                        - Response should be in plain text format, without markdown or HTML.
 
-                                Response:
-                                '''
+                        Response:
+                        '''
+
 
                         prompt = Template(prompt).safe_substitute(question = response["question"], data_description = data_description)
 

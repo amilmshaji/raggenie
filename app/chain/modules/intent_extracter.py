@@ -153,8 +153,11 @@ class IntentExtracter(AbstractHandler):
                 return Formatter.format("Oops! Something went wrong. Try Again!",output['error'])
 
             response["available_intents"] = capability_names
+            intent_extractor = parse_llm_response(output['content'])
+            if intent_extractor.get("intent","").lower() == "out_of_context":
+                intent_extractor["intent"] = "general_enquiry_agent"
 
-            response["intent_extractor"] = parse_llm_response(output['content'])
+            response["intent_extractor"] = intent_extractor
             
         response["rag_filters"] = {
             "datasources" : [response["intent_extractor"]['intent']] if 'intent_extractor' in response else [],

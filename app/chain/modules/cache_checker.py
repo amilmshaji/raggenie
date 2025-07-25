@@ -77,7 +77,7 @@ class Cachechecker(AbstractHandler):
                     distances = [doc['distances'] for doc in out]
                     
                     # Clustering if enough results
-                    if len(out) > 8:
+                    if len(out) > 10:
                         clusters = Container.clustering().kmeans(distances, 2)
                         # Find the shortest cluster by average distance
                         cluster_averages = [sum(cluster)/len(cluster) for cluster in clusters]

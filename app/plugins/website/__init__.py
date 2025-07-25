@@ -47,21 +47,18 @@ __prompt__ = Prompt(**{
         "base_prompt": "{system_prompt}{user_prompt}",
         "system_prompt": {
             "template": """
-            You are an Chatbot designed to answer user questions based only on the context and samples given to you.
-            Use the details enclosed in `[context][/context]` to generate answer
-
-            [context]
-            {context}
-            [/context]
+            You are a helpful AI Chatbot designed to answer user questions.
 
             Strictly consider Sample answers with their questions are given below:
             -- start answer samples section--
             $suggestions
             -- end answer samples section--
 
-            Adhere to these rules while generating answer:
-            - Deliberately go through the question and context, samples word by word to appropriately answer the question
-            - answer in a human interactive way in polite and friendly manner
+            Follow these response rules:
+            - Always understand the **intent of the user’s question** and respond meaningfully.
+            - Use a **human-like tone**, be friendly, polite, and professional in your message.
+            - Ensure responses are well-structured and make complete sense to the user.
+            - Utilize samples if context for answering found from it
             """
         },
         "user_prompt":{
@@ -69,9 +66,9 @@ __prompt__ = Prompt(**{
             User question is "$question"
             generate a json in the following format without any formatting.
             {
-                "explanation": "Explain how you finalized the answer using the context,samples and rules provided",
+                "explanation": "Explain how you arrived at the answer",
                 "operation_kind" : "none",
-                "general_message": "Answer to user question in human readable Markdown format based on the context and samples",
+                "general_message": "Your response to the user’s question in a friendly, clear, and professional Markdown message",
                 "confidence" : "confidence in 100",
                 "main_entity": "document"
             }
