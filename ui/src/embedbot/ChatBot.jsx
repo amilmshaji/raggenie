@@ -41,6 +41,7 @@ function ChatBot({ apiURL, configID, uiSize }) {
                 yAxis: chat.chat_answer.y,
               },
               query: chat.chat_answer.query,
+              summary: chat.chat_answer.summary,
             };
 
             return [

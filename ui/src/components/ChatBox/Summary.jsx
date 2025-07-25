@@ -7,7 +7,6 @@ import style from './ChatBox.module.css'
 function Summary({message={}}) {
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [queryOpen, setQueryOpen] = useState(false);
-
   return (
     <>
         <div className={`${style.SummaryContainer} ${summaryOpen ? style.SummaryContainerOpen: ""}`} >
@@ -26,11 +25,14 @@ function Summary({message={}}) {
                      
                         <p className={style.ChatSQLSummary}>
                           { message?.data?.chart?.data?.length > 0 && <>
-                            Showing {message?.data?.chart?.data?.length > 12 ? 12 : message?.data?.chart?.data?.length } out of {message.data?.chart?.data?.length} items retreived
+                            Showing {message?.data?.chart?.data?.length > 12 ? 12 : message?.data?.chart?.data?.length } out of {message.data?.chart?.data?.length} items retreived.
                           </> }
                           { message?.data?.chart?.data?.length == 0 && <>
                             There are no entries to show at the moment.
                           </> }
+                        </p>
+                        <p className={style.ChatSQLSummary}>
+                            {message?.data?.summary}
                         </p>
                      
                      

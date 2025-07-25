@@ -73,7 +73,11 @@ class OutputFormatter(AbstractHandler):
         response["query"] = input_data.get("query", '')
         response["intent"] = request.get("intent_extractor", {}).get("intent","")
         logger.debug(f"content: {response.get('content')}")
-
+        if "summary" in request:
+            response["summary"] = request["summary"]
+        else:
+            response["summary"] = response.get('content')
+        logger.debug(f"summary: {response.get('summary')}")
         chat_context = request
         chat_context.pop("prompt", None)
         response["chat_context"] = chat_context

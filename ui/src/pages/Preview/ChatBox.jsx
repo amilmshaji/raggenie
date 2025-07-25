@@ -59,7 +59,8 @@ const PreviewChatBox = ({urlPrex = "/preview", selectedOption, setSelectedOption
                             xAxis: res.response.x,
                             yAxis: res.response.y
                         },
-                        query: res.response.query
+                        query: res.response.query,
+                        summary: res.response.summary
                     }
                 
               
@@ -108,7 +109,7 @@ const PreviewChatBox = ({urlPrex = "/preview", selectedOption, setSelectedOption
                         xAxis: chat.chat_answer.x,
                         yAxis: chat.chat_answer.y
                     },
-                    query: chat.chat_answer.query
+                    query: chat.chat_answer.query,
                 }
 
                

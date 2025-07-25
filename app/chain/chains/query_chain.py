@@ -10,7 +10,7 @@ from app.chain.modules.executer import Executer
 from app.chain.modules.ouput_formatter import OutputFormatter
 from app.chain.modules.post_processor import PostProcessor
 from app.chain.formatter.general_response import Formatter
-
+from app.chain.modules.summary_generator import SummaryGenerator
 from app.chain.modules.context_retreiver import ContextRetreiver
 from app.chain.modules.context_storage import ContextStorage
 
@@ -94,6 +94,7 @@ class QueryChain:
         self.schema_retriever = SchemaRetriever(self.vector_store, self.data_sources)
         self.executer = Executer(self.common_context,self.data_sources, self.prompt_generator)
         self.role_back_access_checker = RoleBackAccessChecker(self.common_context,self.data_sources, roleback_context)
+        self.summary_generator = SummaryGenerator(self.common_context, model_configs)
         self.output_formatter = OutputFormatter(self.common_context,self.data_sources)
         self.post_processor = PostProcessor()
 
@@ -102,7 +103,7 @@ class QueryChain:
         self.input_formatter.set_next(self.schema_retriever) \
         .set_next(self.context_retriver).set_next(self.prompt_generator).set_next(self.generator) \
         .set_next(self.role_back_access_checker).set_next(self.validator).set_next(self.executer) \
-        .set_next(self.output_formatter).set_next(self.post_processor)
+        .set_next(self.summary_generator).set_next(self.output_formatter).set_next(self.post_processor)
 
         self.handler =  self.input_formatter
 
