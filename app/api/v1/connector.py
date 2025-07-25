@@ -193,7 +193,7 @@ async def delete_connector(connector_id: int, db: Session = Depends(get_db)):
         CommonResponse: A response indicating success or failure of the deletion process.
     """
 
-    result, error = svc.delete_connector(connector_id, db)
+    result, error = await svc.delete_connector(connector_id, db)
 
     if error:
         return commons.is_error_response("DB Error", result, {"connector": {}})

@@ -47,7 +47,7 @@ class SummaryGenerator(AbstractHandler):
                 general_message = response.get("inference",{}).get("general_message")
                 empty_message = response.get("inference",{}).get("empty_message")
                 logger.info(f"empty_message: {empty_message}")
-                if len(query_response) > 0:
+                if query_response and len(query_response) > 0:
                         
                         data_description = ""
                         if query_response:

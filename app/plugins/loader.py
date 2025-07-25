@@ -1,6 +1,10 @@
 from app.plugins.mssql.handler import Mssql
-from loguru import logger
+from app.plugins.bigquery.handler import Bigquery
 from app.plugins.website.handler import Website
+from app.plugins.document.handler import Document
+from app.plugins.csv.handler import CSVPlugin
+from loguru import logger
+
 
 class DSLoader:
     def __init__(self, configs):
@@ -9,7 +13,10 @@ class DSLoader:
     def load_ds(self):
         db_classes = {
             "mssql": Mssql,
+            "bigquery": Bigquery,
             "website": Website,
+            "document" : Document,
+            "CSV" : CSVPlugin,
         }
         db_type = self.config.get("type","")
         connection_params = self.config.get("params",{})

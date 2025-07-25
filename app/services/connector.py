@@ -280,7 +280,7 @@ async def update_connector(connector_id: int, connector: schemas.ConnectorUpdate
     Returns:
         Tuple: Connector response and error message (if any).
     """
-    provider, is_error = config_repo.get_provider_by_id(connector.connector_type, db)
+    provider, is_error = await config_repo.get_provider_by_id(connector.connector_type, db)
     if is_error:
         return provider, "DB Error"
 
