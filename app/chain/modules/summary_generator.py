@@ -76,9 +76,9 @@ class SummaryGenerator(AbstractHandler):
                         prompt = Template(prompt).safe_substitute(question = response["question"], data_description = data_description)
 
                         logger.debug(f"prompt:{prompt}")
-
-                        loader = BaseLoader(model_configs=self.model_configs["models"])
-                        infernce_model = loader.load_model(configs.inference_llm_model)
+                        model_configs = [{'unique_name': 'llama4', 'name': 'meta-llama/llama-4-scout-17b-16e-instruct', 'api_key': configs.groq_api_key, 'endpoint': 'https://api.groq.com/openai/v1/chat/completions', 'kind': 'grogcloud'}]
+                        loader = BaseLoader(model_configs=model_configs)
+                        infernce_model = loader.load_model(configs.secondary_inference_llm_model)
 
                         output_response, response_metadata = infernce_model.do_inference(
                                 prompt, []

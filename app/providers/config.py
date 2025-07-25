@@ -23,6 +23,8 @@ class Configs(BaseSettings):
     # database
     logging_enabled: bool = os.getenv("ENABLE_FILE_LOGGING", False)
     inference_llm_model:str = os.getenv("INFERENCE_LLM_MODEL", "gpt")
+    groq_api_key:str = os.getenv("GROQ_API_KEY", "")
+    secondary_inference_llm_model:str = os.getenv("SECONDARY_INFERENCE_LLM_MODEL", "llama4")
 
     # Auth
     auth_server: str = os.getenv("AUTH_SERVER", "0.0.0.0")
