@@ -65,25 +65,35 @@ class Cachechecker(AbstractHandler):
         time_taken = end_time - start_time
         logger.info(f"Time taken for cache retriever: {time_taken}")
 
-        logger.info("sorting retrieved cache")
+        if "rag" not in response:
+            response["rag"] = {"suggestions": {}}
+
         for index, out in enumerate(results):
             opt_cache = []
-            if out and len(out) > 0 and out[0]['distances'] < self.context_relevance_threshold:
-                distances = [doc['distances'] for doc in out]
-                if len(out) > 5:
-                    clusters = Container.clustering().kmeans(distances, 2)
-                    shortest_cluster = clusters[0]
-                    for doc in out:
-                        if doc['distances'] in shortest_cluster:
-                            opt_cache.append(doc)
-                else:
-                    opt_cache = out
 
-            if "rag" not in response:
-                response["rag"]= {"suggestions" : {}}
+            if out and isinstance(out, list) and len(out) > 0:
+                # Check the closest distance against threshold
+                if out[0]['distances'] < self.context_relevance_threshold:
+                    distances = [doc['distances'] for doc in out]
+                    
+                    # Clustering if enough results
+                    if len(out) > 8:
+                        clusters = Container.clustering().kmeans(distances, 2)
+                        # Find the shortest cluster by average distance
+                        cluster_averages = [sum(cluster)/len(cluster) for cluster in clusters]
+                        shortest_cluster_index = cluster_averages.index(min(cluster_averages))
+                        shortest_cluster = clusters[shortest_cluster_index]
+                        
+                        # Match documents that belong to the shortest cluster
+                        for doc in out:
+                            if any(abs(doc['distances'] - d) < 1e-6 for d in shortest_cluster):  # float-safe comparison
+                                opt_cache.append(doc)
+                    else:
+                        opt_cache = out
 
-            response["rag"]["suggestions"] = {list(self.datasources.keys())[index] : opt_cache}
-
+            # Always set, even if opt_cache is empty (helps with fallback logic)
+            datasource_key = list(self.datasources.keys())[index]
+            response["rag"]["suggestions"][datasource_key] = opt_cache
 
         if self.forward and len(results) > 0:
             if results[0]["distances"] < -10:

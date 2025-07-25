@@ -256,7 +256,7 @@ def vector_embedding_connector(config, db_config):
 
 
 
-def test_credentials(provider_id: int, config: schemas.TestCredentials, db: Session):
+async def test_credentials(provider_id: int, config: schemas.TestCredentials, db: Session):
 
     """
     Tests the credentials of a specific provider based on its configuration.
@@ -270,7 +270,7 @@ def test_credentials(provider_id: int, config: schemas.TestCredentials, db: Sess
         (str, str | None): A success message or an error message if unsupported.
     """
 
-    provider, is_error = repo.get_provider_by_id(provider_id, db)
+    provider, is_error = await repo.get_provider_by_id(provider_id, db)
     if provider is None or is_error:
         return provider, "Provider Not Found"
 
@@ -456,7 +456,7 @@ def create_sql(request: Request,sql:schemas.SampleSQLBase,db:Session, user_id: s
     if not sql:
         return [], None
 
-    insert_vector_store(request, sql, db)
+    # insert_vector_store(request, sql, db)
 
     return schemas.SampleSQLResponse(
         description=sql.description,
@@ -488,7 +488,7 @@ def update_sql(request: Request, sql_id: int, sql: schemas.SampleSQLUpdate, db: 
     if not sql:
         return {}, None
 
-    insert_vector_store(request, sql, db)
+    # insert_vector_store(request, sql, db)
 
     return schemas.SampleSQLResponse(
         description=sql.description,

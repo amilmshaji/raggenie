@@ -77,7 +77,7 @@ async def get_provider(provider_id: int, db: Session = Depends(get_db)):
     )
 
 @router.post("/{provider_id}/test-credentials", response_model=resp_schemas.CommonResponse, dependencies=[Depends(verify_token)])
-def test_connections(provider_id: int, config: schemas.TestCredentials, db: Session = Depends(get_db)):
+async def test_connections(provider_id: int, config: schemas.TestCredentials, db: Session = Depends(get_db)):
 
     """
     Tests the credentials for a specific provider (plugin) by its ID.
@@ -91,7 +91,7 @@ def test_connections(provider_id: int, config: schemas.TestCredentials, db: Sess
         CommonResponse: A response indicating the success or failure of the credential test.
     """
 
-    success, message = svc.test_credentials(provider_id, config, db)
+    success, message = await svc.test_credentials(provider_id, config, db)
 
     if not success:
         return resp_schemas.CommonResponse(

@@ -58,6 +58,10 @@ class DocumentRetriever(AbstractHandler):
         time_taken = end_time - start_time
         logger.info(f"Time taken for document retriever: {time_taken}")
 
+        if "rag" not in response:
+            response["rag"] = {"context": {}}
+        if "context" not in response["rag"]:
+            response["rag"]["context"] = {}
 
         logger.info("sorting retrieved documents")
         for index, out in enumerate(results):
@@ -73,10 +77,9 @@ class DocumentRetriever(AbstractHandler):
                 else:
                     opt_doc = out
 
-            if "rag" not in response:
-                response["rag"]= {"context" : {list(self.datasources.keys())[index] : []}}
-
-            response["rag"]["context"] = {list(self.datasources.keys())[index] : opt_doc}
+            datasource_key = list(self.datasources.keys())[index]
+    
+            response["rag"]["context"][datasource_key] = opt_doc 
 
 
         return await super().handle(response)

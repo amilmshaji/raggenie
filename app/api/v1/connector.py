@@ -342,7 +342,7 @@ async def create_configuration(configuration: schemas.ConfigurationCreation, db:
         CommonResponse: A response indicating the success or failure of the configuration creation.
     """
     user_id = user_data["user_id"]
-    result, error = svc.create_configuration(configuration, db, user_id)
+    result, error = await svc.create_configuration(configuration, db, user_id)
 
     if error:
         return commons.is_error_response("DB error", result, {"configuration": []})
